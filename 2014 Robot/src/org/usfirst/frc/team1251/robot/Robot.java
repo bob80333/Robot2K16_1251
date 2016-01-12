@@ -1,7 +1,6 @@
 
 package org.usfirst.frc.team1251.robot;
 
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,20 +14,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+    final String defaultAuto = "Default";
+    final String customAuto = "My Auto";
+    String autoSelected;
+    SendableChooser chooser;
+	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-	RobotDrive myDrive;
-	Joystick movement;
-	Victor leftT, rightT;
-	Victor testing;
-	
     public void robotInit() {
-    	movement = new Joystick(0);
-    	//myDrive = new RobotDrive(0, 1, 2, 3);
-    	testing = new Victor (0);
-    	
+        chooser = new SendableChooser();
+        chooser.addDefault("Default Auto", defaultAuto);
+        chooser.addObject("My Auto", customAuto);
+        SmartDashboard.putData("Auto choices", chooser);
     }
     
 	/**
@@ -41,31 +40,31 @@ public class Robot extends IterativeRobot {
 	 * If using the SendableChooser make sure to add them to the chooser code above as well.
 	 */
     public void autonomousInit() {
-
+    	autoSelected = (String) chooser.getSelected();
+//		autoSelected = SmartDashboard.getString("Auto Selector", defaultAuto);
+		System.out.println("Auto selected: " + autoSelected);
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	
+    	switch(autoSelected) {
+    	case customAuto:
+        //Put custom auto code here   
+            break;
+    	case defaultAuto:
+    	default:
+    	//Put default auto code here
+            break;
+    	}
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        //while (isEnabled()) {
-        	//myDrive.tankDrive(movement.getRawAxis(1), movement.getRawAxis(5));
-        	
-        //}
-    	if(movement.getRawButton(0)){
-    		testing.set(.5);
-    	}
-    	else{
-    		testing.set(0);
-    	}
-    	
+        
     }
     
     /**
