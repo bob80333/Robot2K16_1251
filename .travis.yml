@@ -1,7 +1,7 @@
 sudo: false
 language: java
 before_install:
-  cp -a /home/travis/build/bob80333/swerve-drive/2016 Robot/src/home/travis/build/bob80333/Robot2K16_1251/src
+  cp -a /home/travis/build/bob80333/Robot2K16_1251/2016 Robot/src/home/travis/build/bob80333/Robot2K16_1251/src
 install: git clone https://github.com/bob80333/wpilib-mirror.git ~/wpilib
 script: 
  - "ant jar"
