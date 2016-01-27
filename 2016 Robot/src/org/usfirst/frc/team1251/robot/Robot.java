@@ -1,78 +1,134 @@
 
 package org.usfirst.frc.team1251.robot;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
+/**Code for prototype testing */
+
 public class Robot extends IterativeRobot {
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
-	RobotDrive myDrive;
-	Joystick movement;
-	Victor leftT, rightT;
-	Victor testing;
+	
+	/**The Following code is used to switch values depending on the controller used
+	 X-BOX: cLeft=1, cRight=5, cShoot=3, cIntake=5 |
+	 LOGITECH: cLeft=1, cRight=3, cShoot=1, cIntake=5 | 
+	**/
+	int cLeft = 1;
+	int cRight = 3;
+
+	int cShoot = 1;
+	int cIntake = 5;
+	int cSpeed = 6;
+	
+	double sMulti = 1.0;
+	double accel = 0.05;
+	/**--------------------------**/
+	double lLimiter, rLimiter, lSpeed, rSpeed;
+	
+	int lNegative, rNegative;
+	RobotDrive mainDrive;
+	Joystick controller, cStick;
+	Victor shooter;
+	Encoder eWheel;
+	
+	double P = 0.00003;
+	double I = 0.0026;
+	double D = 0.0002;
+	
+	PIDController pid;
+	
 	
     public void robotInit() {
-    	movement = new Joystick(0);
-    	//myDrive = new RobotDrive(0, 1, 2, 3);
-    	testing = new Victor (0);
+    	mainDrive = new RobotDrive(1, 0);
+    	
+    	controller = new Joystick(0);
+    	cStick = new Joystick(1);
+    	
+    	shooter = new Victor (2);
+    	
+    	lLimiter = 0.0;
+    	rLimiter = 0.0;
+    	
+    	eWheel = new  Encoder(1, 2, true, EncodingType.k4X);
+    	eWheel.setPIDSourceType(PIDSourceType.kRate);
+    	pid = new PIDController(P, I, D, eWheel, shooter);
+    	
+    	shooter.setInverted(true);
     	
     }
     
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
-	 * using the dashboard. The sendable chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
-	 * Dashboard, remove all of the chooser code and uncomment the getString line to get the auto name from the text box
-	 * below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional comparisons to the switch structure below with additional strings.
-	 * If using the SendableChooser make sure to add them to the chooser code above as well.
-	 */
-    public void autonomousInit() {
-
+    public void autonomousInit() { //empty
+    	//Temporarily blank
+    }
+    
+    public void autonomousPeriodic() { //empty
+    	//Temporarily blank
+    }
+    
+    public void teleopInit(){
+    	pid.enable();
+    	pid.setSetpoint(7000);
     }
 
-    /**
-     * This function is called periodically during autonomous
-     */
-    public void autonomousPeriodic() {
-    	
-    }
-
-    /**
-     * This function is called periodically during operator control
-     */
     public void teleopPeriodic() {
-        //while (isEnabled()) {
-        	//myDrive.tankDrive(movement.getRawAxis(1), movement.getRawAxis(5));
+    	
+    	if (isNegative(controller.getRawAxis(cLeft)))
+    		lNegative = -1;
+    	else
+    		lNegative = 1;
+    	if (isNegative(controller.getRawAxis(cRight)))
+    		rNegative = -1;
+    	else
+    		rNegative = 1;
+    	if (controller.getRawAxis(cLeft) > lLimiter)
+    		lLimiter = lLimiter + accel;		
+    	else 
+    		lLimiter = lLimiter - accel;
+    	
+    	if (controller.getRawAxis(cRight) > rLimiter)
+    		rLimiter = rLimiter + accel;		
+    	else
+    		rLimiter = rLimiter - accel;
+    	
+    	if(controller.getRawButton(cSpeed)){
+        	lSpeed = controller.getRawAxis(cLeft)* sMulti;
+        	rSpeed = controller.getRawAxis(cRight)* sMulti;
+        	mainDrive.tankDrive(-lSpeed, -rSpeed);
+    	}
+    	else {
+        	lSpeed = lNegative*(Math.pow(controller.getRawAxis(cLeft), 2))* sMulti * Math.abs(lLimiter);
+        	rSpeed = rNegative*(Math.pow(controller.getRawAxis(cRight), 2))* sMulti * Math.abs(rLimiter);
+    		mainDrive.tankDrive(-lSpeed, -rSpeed);
+    	}
+    	
+    	
+    	if (controller.getRawButton(cShoot))
+    		pid.enable();
         	
-        //}
-    	if(movement.getRawButton(0)){
-    		testing.set(.5);
-    	}
-    	else{
-    		testing.set(0);
-    	}
+    	else
+        	pid.disable();
+    	
+    	SmartDashboard.putNumber("Wheel rpm: ", eWheel.getRate());
+    	SmartDashboard.putNumber("shooter: ", shooter.get());
     	
     }
     
-    /**
-     * This function is called periodically during test mode
-     */
-    public void testPeriodic() {
-    
+    public void testPeriodic() { //empty
+    	//Temporarily unused
     }
+    
+    public void disabledInit(){
+    	pid.disable();
+    }
+    
+    public static boolean isNegative(double d) {
+        return Double.compare(d, 0.0) < 0;
+   }
     
 }
