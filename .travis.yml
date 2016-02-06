@@ -9,3 +9,5 @@ script:
 # - "cd /home/travis/build/bob80333/Robot2K16_1251/report/junit/xml && ls"
 # - "cat TEST-org.usfirst.frc.team1251.robot.SwerveDriveTest.xml"
 jdk: oraclejdk8
+notifications:
+  slack: frcteam1251:BGwfTKjTUM1HQDXnBjyCmW6Q
