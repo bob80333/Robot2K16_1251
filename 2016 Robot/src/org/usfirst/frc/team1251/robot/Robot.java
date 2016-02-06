@@ -54,6 +54,13 @@ public class Robot extends IterativeRobot {
 	boolean rotatingRobot = false;
 	
 	double desiredAngle;
+	//change for different rotation speeds
+	final double fastRotate = 0.8;
+	final double slowRotate = 0.2;
+	//change for different cutoff speeds between fastRotate and slowRotate
+	//to get those near perfect turns
+	final double fastRotateCutoff = 5;
+	final double slowRotateCutoff = 0.5;
 	
 	
     public void robotInit() {
@@ -192,27 +199,24 @@ public class Robot extends IterativeRobot {
 	public double rotateRobot(double changeInDegrees){
 		double currentAngle = gyro.getAngle();
 		double desiredAngle;
-		
-		if(currentAngle + changeInDegrees > 360){
-			desiredAngle = currentAngle + changeInDegrees - 360;
-		}else if (currentAngle + changeInDegrees < 0){
-			desiredAngle = currentAngle + changeInDegrees + 360;
-		}
-		else{
-			desiredAngle = currentAngle + changeInDegrees;
-		}
+		desiredAngle = currentAngle + changeInDegrees;
 		rotatingRobot = true;
 		return desiredAngle;
 	}
 	
+	/**
+	 * rotates using the gyro to get very close to a desired angle
+	 * Change constants in the variables section to calibrate when changing drivetrains
+	 */
 	public void rotateDrivetrain(){
-		if (desiredAngle < 0){
-			desiredAngle += 360;
-		}
-		if (gyro.getAngle() < desiredAngle - 1){
-			mainDrive.tankDrive(-.8, .8);
-		}else if ( gyro.getAngle() > desiredAngle + 1){
-			mainDrive.tankDrive(.8, -.8);
+		if (gyro.getAngle() < desiredAngle - 1 && (gyro.getAngle() - desiredAngle > -fastRotateCutoff)){
+			mainDrive.tankDrive(fastRotate, -fastRotate);
+		}else if (gyro.getAngle() > desiredAngle + 1 && (gyro.getAngle() - desiredAngle > fastRotateCutoff)){
+			mainDrive.tankDrive(-fastRotate, fastRotate);		
+		}else if (gyro.getAngle() < desiredAngle - 1 && (gyro.getAngle() - desiredAngle > -slowRotateCutoff)){
+			mainDrive.tankDrive(slowRotate, -slowRotate);
+		}else if (gyro.getAngle() > desiredAngle + 1 && (gyro.getAngle() - desiredAngle > slowRotateCutoff)){
+			mainDrive.tankDrive(-slowRotate, slowRotate);
 		}else {
 			rotatingRobot = false;
 			mainDrive.drive(0, 0);
