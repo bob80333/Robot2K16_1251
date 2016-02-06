@@ -49,6 +49,10 @@ public class Robot extends IterativeRobot {
 	
 	AnalogGyro gyro;
 	
+	boolean rotatingRobot = false;
+	
+	double desiredAngle;
+	
 	
     public void robotInit() {
     	//initialize the drive base
@@ -84,12 +88,12 @@ public class Robot extends IterativeRobot {
     	
     }
     
-    public void autonomousInit() { //empty
-    	//Temporarily blank
+    public void autonomousInit() { 
+    	desiredAngle = rotateRobot(10);
     }
     
     public void autonomousPeriodic() { //empty
-    	//Temporarily blank
+    	rotateDrivetrain(desiredAngle, 10);
     }
     
     public void teleopInit(){
@@ -171,9 +175,35 @@ public class Robot extends IterativeRobot {
     	}
     
     
-    public static boolean isNegative(double d) {
+    public boolean isNegative(double d) {
         return Double.compare(d, 0.0) < 0;
    }
+
+	public double rotateRobot(double changeInDegrees){
+		double currentAngle = gyro.getAngle();
+		double desiredAngle;
+		
+		if(currentAngle + changeInDegrees > 360){
+			desiredAngle = currentAngle + changeInDegrees - 360;
+		}else if (currentAngle + changeInDegrees < 0){
+			desiredAngle = currentAngle + changeInDegrees + 360;
+		}
+		else{
+			desiredAngle = currentAngle + changeInDegrees;
+		}
+		rotatingRobot = true;
+		return desiredAngle;
+	}
+	
+	public void rotateDrivetrain(double desiredAngle, double changeInDegrees){
+		if (!(gyro.getAngle() > desiredAngle + 1 || gyro.getAngle() < desiredAngle - 1)){
+			mainDrive.drive(.5, 1);
+		}else if (!(gyro.getAngle() < desiredAngle - 1 || gyro.getAngle() > desiredAngle + 1)){
+			mainDrive.drive(-.5, -1);
+		}else {
+			rotatingRobot = false;
+		}
+	}
     
 }
 
