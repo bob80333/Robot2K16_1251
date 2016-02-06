@@ -49,9 +49,14 @@ public class Robot extends IterativeRobot {
 	
 	int autoLoopCounter = 0;
 	
-	AnalogGyro gyro;
+	AnalogGyro gyroHorizontal;
+	AnalogGyro gyroVertical;
 	
 	boolean rotatingRobot = false;
+	
+	boolean goneUpObstacle = false;
+	boolean goneDownObstacle = false;
+	boolean autoLoopCountReset = false;
 	
 	double desiredAngle;
 	//change for different rotation speeds
@@ -60,7 +65,11 @@ public class Robot extends IterativeRobot {
 	//change for different cutoff speeds between fastRotate and slowRotate
 	//to get those near perfect turns
 	final double fastRotateCutoff = 5;
-	final double slowRotateCutoff = 0.5;
+	final double slowRotateCutoff = 0.3;
+	
+	double initialVerticalValue = 0;
+	
+	boolean actuallyRotating = false;
 	
 	
     public void robotInit() {
@@ -88,9 +97,10 @@ public class Robot extends IterativeRobot {
     	
     	//invert the shooter
     	shooter.setInverted(true);
-    	gyro = new AnalogGyro(0);
-    	
-    	gyro.calibrate();
+    	gyroHorizontal = new AnalogGyro(0);
+    	gyroVertical = new AnalogGyro(1);
+    	gyroHorizontal.calibrate();
+    	gyroVertical.calibrate();
     	
     	
     	
@@ -98,19 +108,44 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit() { 
-    	desiredAngle = rotateRobot(-90);
+    	//desiredAngle = rotateRobot(-90);
+    	desiredAngle = gyroHorizontal.getAngle();
+    	rotatingRobot = true;
     	autoLoopCounter = 0;
+    	goneUpObstacle = false;
+    	goneDownObstacle = false;
+    	autoLoopCountReset = false;
+    	initialVerticalValue = gyroVertical.getAngle();
+    	
     }
     
     public void autonomousPeriodic() { //empty
-    	if (rotatingRobot && autoLoopCounter > 50){
+    	SmartDashboard.putBoolean("Rotating Robot", rotatingRobot);
+    	SmartDashboard.putNumber("Horizontal Gyro", gyroHorizontal.getAngle());
+    	SmartDashboard.putNumber("Desired Angle", desiredAngle);
+    	SmartDashboard.putNumber("Vertical Gyro", gyroVertical.getAngle());
+    	SmartDashboard.putBoolean("Gone up obstacle", goneUpObstacle);
+    	SmartDashboard.putBoolean("Gone down obstacle", goneDownObstacle);
+    	SmartDashboard.putBoolean("auto loop counter reset", autoLoopCountReset);
+    	SmartDashboard.putNumber("Number of auto loops", autoLoopCounter);
+    	SmartDashboard.putBoolean("rotating", actuallyRotating);
+    	SmartDashboard.putBoolean("in range of being flat", (gyroVertical.getAngle() > (-initialVerticalValue - 1) && gyroVertical.getAngle() < (initialVerticalValue + 1)));
+    	if (gyroVertical.getAngle() > (initialVerticalValue + 10))
+    		goneUpObstacle = true;
+    	else if(gyroVertical.getAngle() < (initialVerticalValue - 10) && goneUpObstacle)
+    		goneDownObstacle = true;
+    	if (goneUpObstacle && goneDownObstacle && (gyroVertical.getAngle() > (-initialVerticalValue - 2.5) && gyroVertical.getAngle() < (initialVerticalValue + 2.5)) && rotatingRobot && !autoLoopCountReset){
+    		autoLoopCounter = 0;
+    		autoLoopCountReset = true;
+    	}
+    	if (goneUpObstacle && goneDownObstacle && (gyroVertical.getAngle() > (-initialVerticalValue - 2.5) && gyroVertical.getAngle() < (initialVerticalValue + 2.5)) && rotatingRobot && autoLoopCounter > 70){
+    		actuallyRotating = true;
+    		
+    	}
+    	autoLoopCounter++;
+    	if (actuallyRotating && rotatingRobot){
     		rotateDrivetrain();
     	}
-    	SmartDashboard.putBoolean("Rotating Robot", rotatingRobot);
-    	SmartDashboard.putNumber("Gyro", gyro.getAngle());
-    	SmartDashboard.putNumber("Desired Angle", desiredAngle);
-    	
-    	autoLoopCounter++;
     }
     
     public void teleopInit(){
@@ -172,7 +207,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Wheel rpm: ", eWheel.getRate()/120);
     	SmartDashboard.putNumber("shooter: ", shooter.get());
     	SmartDashboard.putData("PID: ", pid);
-    	SmartDashboard.putNumber("Gyro", gyro.getRate());
+    	SmartDashboard.putNumber("Gyro", gyroHorizontal.getRate());
     	
     	if (controller.getRawButton(2)){
     		solenoid.set(Value.kReverse);
@@ -197,7 +232,7 @@ public class Robot extends IterativeRobot {
    }
 
 	public double rotateRobot(double changeInDegrees){
-		double currentAngle = gyro.getAngle();
+		double currentAngle = gyroHorizontal.getAngle();
 		double desiredAngle;
 		desiredAngle = currentAngle + changeInDegrees;
 		rotatingRobot = true;
@@ -209,13 +244,13 @@ public class Robot extends IterativeRobot {
 	 * Change constants in the variables section to calibrate when changing drivetrains
 	 */
 	public void rotateDrivetrain(){
-		if (gyro.getAngle() < desiredAngle - 1 && (gyro.getAngle() - desiredAngle > -fastRotateCutoff)){
+		if (gyroHorizontal.getAngle() < desiredAngle - 0.5 && (gyroHorizontal.getAngle() - desiredAngle > -fastRotateCutoff)){
 			mainDrive.tankDrive(fastRotate, -fastRotate);
-		}else if (gyro.getAngle() > desiredAngle + 1 && (gyro.getAngle() - desiredAngle > fastRotateCutoff)){
+		}else if (gyroHorizontal.getAngle() > desiredAngle + 0.5 && (gyroHorizontal.getAngle() - desiredAngle > fastRotateCutoff)){
 			mainDrive.tankDrive(-fastRotate, fastRotate);		
-		}else if (gyro.getAngle() < desiredAngle - 1 && (gyro.getAngle() - desiredAngle > -slowRotateCutoff)){
+		}else if (gyroHorizontal.getAngle() < desiredAngle - 0.2 && (gyroHorizontal.getAngle() - desiredAngle > -slowRotateCutoff)){
 			mainDrive.tankDrive(slowRotate, -slowRotate);
-		}else if (gyro.getAngle() > desiredAngle + 1 && (gyro.getAngle() - desiredAngle > slowRotateCutoff)){
+		}else if (gyroHorizontal.getAngle() > desiredAngle + 0.2 && (gyroHorizontal.getAngle() - desiredAngle > slowRotateCutoff)){
 			mainDrive.tankDrive(-slowRotate, slowRotate);
 		}else {
 			rotatingRobot = false;
