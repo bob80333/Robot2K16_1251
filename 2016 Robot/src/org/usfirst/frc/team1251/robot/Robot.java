@@ -47,6 +47,8 @@ public class Robot extends IterativeRobot {
 	double D = 0.0002;
 	PIDController pid;
 	
+	int autoLoopCounter = 0;
+	
 	AnalogGyro gyro;
 	
 	boolean rotatingRobot = false;
@@ -89,11 +91,19 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit() { 
-    	desiredAngle = rotateRobot(10);
+    	desiredAngle = rotateRobot(-90);
+    	autoLoopCounter = 0;
     }
     
     public void autonomousPeriodic() { //empty
-    	rotateDrivetrain(desiredAngle, 10);
+    	if (rotatingRobot && autoLoopCounter > 50){
+    		rotateDrivetrain();
+    	}
+    	SmartDashboard.putBoolean("Rotating Robot", rotatingRobot);
+    	SmartDashboard.putNumber("Gyro", gyro.getAngle());
+    	SmartDashboard.putNumber("Desired Angle", desiredAngle);
+    	
+    	autoLoopCounter++;
     }
     
     public void teleopInit(){
@@ -195,13 +205,17 @@ public class Robot extends IterativeRobot {
 		return desiredAngle;
 	}
 	
-	public void rotateDrivetrain(double desiredAngle, double changeInDegrees){
-		if (!(gyro.getAngle() > desiredAngle + 1 || gyro.getAngle() < desiredAngle - 1)){
-			mainDrive.drive(.5, 1);
-		}else if (!(gyro.getAngle() < desiredAngle - 1 || gyro.getAngle() > desiredAngle + 1)){
-			mainDrive.drive(-.5, -1);
+	public void rotateDrivetrain(){
+		if (desiredAngle < 0){
+			desiredAngle += 360;
+		}
+		if (gyro.getAngle() < desiredAngle - 1){
+			mainDrive.tankDrive(-.8, .8);
+		}else if ( gyro.getAngle() > desiredAngle + 1){
+			mainDrive.tankDrive(.8, -.8);
 		}else {
 			rotatingRobot = false;
+			mainDrive.drive(0, 0);
 		}
 	}
     
