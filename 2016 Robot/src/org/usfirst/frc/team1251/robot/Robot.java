@@ -216,8 +216,14 @@ public class Robot extends IterativeRobot {
     	}
     }
     
+    public void testInit(){
+    	desiredAngle = gyroHorizontal.getAngle();
+    }
+    
     public void testPeriodic() { //empty
-    	//Temporarily unused
+    	// make all the freshies go 'wow'
+    	mainDrive.tankDrive(controller.getRawAxis(cLeft), controller.getRawAxis(cRight));
+    	rotateDrivetrain();
     }
     
     public void disabledInit(){
