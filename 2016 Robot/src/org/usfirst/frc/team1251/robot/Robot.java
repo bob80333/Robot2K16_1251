@@ -4,6 +4,7 @@ package org.usfirst.frc.team1251.robot;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**Code for prototype testing */
@@ -71,6 +72,14 @@ public class Robot extends IterativeRobot {
 	
 	boolean actuallyRotating = false;
 	
+	Trigger location1;
+	Trigger location2;
+	
+	Trigger defenseCrossing1;
+	Trigger defenseCrossing2;
+	int location = 0;
+	int defenseToCross = 0;
+	
 	
     public void robotInit() {
     	//initialize the drive base
@@ -120,7 +129,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousPeriodic() { //empty
-    	SmartDashboard.putBoolean("Rotating Robot", rotatingRobot);
+    	/*SmartDashboard.putBoolean("Rotating Robot", rotatingRobot);
     	SmartDashboard.putNumber("Horizontal Gyro", gyroHorizontal.getAngle());
     	SmartDashboard.putNumber("Desired Angle", desiredAngle);
     	SmartDashboard.putNumber("Vertical Gyro", gyroVertical.getAngle());
@@ -146,6 +155,18 @@ public class Robot extends IterativeRobot {
     	if (actuallyRotating && rotatingRobot){
     		rotateDrivetrain();
     	}
+    	*/
+    	findLocation();
+    	findDefense();
+    	switch (defenseToCross){
+    	case 0:
+    		//cross without doing anything extra
+    	case 1:
+    		//cross the thingy you have to lift up
+    	case 2:
+    		//cross the teeter-totters
+    	}
+    	
     }
     
     public void teleopInit(){
@@ -220,7 +241,7 @@ public class Robot extends IterativeRobot {
     	desiredAngle = gyroHorizontal.getAngle();
     }
     
-    public void testPeriodic() { //empty
+    public void testPeriodic() {
     	// make all the freshies go 'wow'
     	mainDrive.tankDrive(controller.getRawAxis(cLeft), controller.getRawAxis(cRight));
     	rotateDrivetrain();
@@ -264,6 +285,36 @@ public class Robot extends IterativeRobot {
 		}
 	}
     
+	public void findLocation(){
+		if (location1.get() && location2.get()){
+    		location = 5;
+    	}else if (location1.get() && !location2.get()){
+    		location = 4;
+    	}else if (!location1.get() && location2.get()){
+    		location = 3;
+    	}else if (!location1.get() && !location2.get()){
+    		location = 2;
+    	}else{
+    		//this should NEVER run
+    		location = 0;
+    	}
+	}
+	
+	public void findDefense(){
+		if (defenseCrossing1.get() && defenseCrossing2.get()){
+    		defenseToCross = 0;
+    	}else if (!defenseCrossing1.get() && defenseCrossing2.get()){
+    		defenseToCross = 1;
+    	}else if (defenseCrossing1.get() && !defenseCrossing2.get()){
+    		defenseToCross = 2;
+    	}else if (!defenseCrossing1.get() && !defenseCrossing2.get()){
+    		//somebody dun goofed
+    		defenseToCross = -1;
+    	}else{
+    		//how?
+    		defenseToCross = -1;
+    	}
+	}
 }
 
 
