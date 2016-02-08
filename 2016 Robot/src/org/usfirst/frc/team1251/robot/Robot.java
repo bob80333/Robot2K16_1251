@@ -80,6 +80,8 @@ public class Robot extends IterativeRobot {
 	int location = 0;
 	int defenseToCross = 0;
 	
+	boolean crossedDefense = false;
+	
 	
     public void robotInit() {
     	//initialize the drive base
@@ -165,6 +167,18 @@ public class Robot extends IterativeRobot {
     		//cross the thingy you have to lift up
     	case 2:
     		//cross the teeter-totters
+    	}
+    	if (goneUpObstacle && goneDownObstacle && crossedDefense){
+    		switch (location){
+    		case 2:
+    			//we are at location #2 on the manual
+    		case 3:
+    			//we are at location #3 on the manual
+    		case 4:
+    			//we are at location #4 on the manual
+    		case 5:
+    			// we are at location #5 on the manual
+    		}
     	}
     	
     }
