@@ -257,8 +257,18 @@ public class Robot extends IterativeRobot {
     
     public void testPeriodic() {
     	// make all the freshies go 'wow'
-    	mainDrive.tankDrive(controller.getRawAxis(cLeft), controller.getRawAxis(cRight));
-    	rotateDrivetrain();
+    	if (gyroHorizontal.getAngle() < desiredAngle - 0.5 && (gyroHorizontal.getAngle() - desiredAngle > -fastRotateCutoff)){
+			mainDrive.tankDrive(fastRotate, -fastRotate);
+		}else if (gyroHorizontal.getAngle() > desiredAngle + 0.5 && (gyroHorizontal.getAngle() - desiredAngle > fastRotateCutoff)){
+			mainDrive.tankDrive(-fastRotate, fastRotate);		
+		}else if (gyroHorizontal.getAngle() < desiredAngle - 0.2 && (gyroHorizontal.getAngle() - desiredAngle > -slowRotateCutoff)){
+			mainDrive.tankDrive(slowRotate, -slowRotate);
+		}else if (gyroHorizontal.getAngle() > desiredAngle + 0.2 && (gyroHorizontal.getAngle() - desiredAngle > slowRotateCutoff)){
+			mainDrive.tankDrive(-slowRotate, slowRotate);
+		}else {
+			mainDrive.tankDrive(controller.getRawAxis(cLeft), controller.getRawAxis(cRight));
+		}
+    	
     }
     
     public void disabledInit(){
