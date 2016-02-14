@@ -38,3 +38,5 @@ Credits.txt
 gradle/wrapper/gradle-wrapper.properties
 GradleRIO4Dummies.txt
 gradlew.bat
+Vision-Testing/build.xml
+Vision-Testing/build.properties
