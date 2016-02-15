@@ -1,11 +1,7 @@
 
 package org.usfirst.frc.team1251.robot;
 
-import java.util.Hashtable;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables2.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -15,10 +11,6 @@ import edu.wpi.first.wpilibj.networktables2.*;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	
-	private Hashtable<Point, Line> startingPoints;
-	private Hashtable<Point, Line> endingPoints;
-	
 
     /**
      * This function is run when the robot is first started up and should be
@@ -33,7 +25,7 @@ public class Robot extends IterativeRobot {
 	 * This function is run once when the robot switches to autonomous
 	 * */
     public void autonomousInit() {
-    	NetworkTable.getTable("myLinesReprt");
+
     }
 
     /**
