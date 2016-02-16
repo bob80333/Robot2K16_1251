@@ -10,11 +10,6 @@ public class Vision {
 	
 	private List<Line> lines= new ArrayList<>();
 	private List<Target> targets = new ArrayList<>();
-	private List<ConnectedLines> connectedLines= new ArrayList<>();
-	private Point lastPoint1;
-	private Point lastPoint2;
-	private Point lastPoint1Backwards;
-	private Point lastPoint2Backwards;
 	// + or - this value is the margin of error between two points to be considered 'connected'
 	private final int errorMargin = 5;
 	double[] lineHeights = {};
@@ -27,21 +22,6 @@ public class Vision {
 	public void findTargets(){
 		updateArraysFromNetwork();
 		updateTablesAndList();
-		lastPoint1 = lines.get(0).getPoint1();
-		lastPoint2 = lines.get(0).getPoint2();
-		lastPoint1Backwards = lines.get(lines.size()-1).getPoint1();
-		lastPoint2Backwards = lines.get(lines.size()-1).getPoint2();
-		int forwardIndex = 1;
-		int backwardIndex = lines.size()-2;
-		for (int i = 1; i < lines.size(); i++){
-			if (!(lines.get(forwardIndex).getPoint1().getX() > lastPoint1.getX() + errorMargin)  
-					&& !(lines.get(forwardIndex).getPoint1().getX() < lastPoint1.getX() - errorMargin)
-					&& !(lines.get(forwardIndex).getPoint1().getY() > lastPoint1.getY() + errorMargin)  
-					&& !(lines.get(forwardIndex).getPoint1().getY() < lastPoint1.getY() - errorMargin)){
-				connectedLines.add(new ConnectedLines(lines.get(forwardIndex)));
-			}
-			forwardIndex++;
-		}
 	}
 	
 	/**
@@ -63,6 +43,54 @@ public class Vision {
 	private void updateTablesAndList(){
 		for (int i = 0; i < lineX1s.length; i++){
 			lines.add(new Line (new Point(lineX1s[i],  lineY1s[i]), new Point(lineX2s[i],  lineY2s[i]), lineAngles[i], lineHeights[i]));
+		}
+	}
+	
+	private void findLineConnections(){
+		int forwardIndex = 1;
+		int lastForwardIndex = 0;
+		int backwardIndex = lines.size() - 2;
+		int lastBackwardIndex = lines.size() - 1;
+		for (int i = 1; i < lines.size(); i++){
+			
+			if (!(lines.get(forwardIndex).getPoint1().getX() > lines.get(lastForwardIndex).getPoint1().getX() + errorMargin)  
+					&& !(lines.get(forwardIndex).getPoint1().getX() < lines.get(lastForwardIndex).getPoint1().getX() - errorMargin)
+					&& !(lines.get(forwardIndex).getPoint1().getY() > lines.get(lastForwardIndex).getPoint1().getY() + errorMargin)
+					&& !(lines.get(forwardIndex).getPoint1().getY() < lines.get(lastForwardIndex).getPoint1().getY() - errorMargin)){
+				
+				lines.get(forwardIndex).setPoint1ConnectedIndex(lastForwardIndex);
+				lines.get(lastForwardIndex).setPoint2ConnectedIndex(forwardIndex);
+				
+			}else if (!(lines.get(forwardIndex).getPoint2().getX() > lines.get(lastForwardIndex).getPoint2().getX() + errorMargin)  
+					&& !(lines.get(forwardIndex).getPoint2().getX() < lines.get(lastForwardIndex).getPoint2().getX() - errorMargin)
+					&& !(lines.get(forwardIndex).getPoint2().getY() > lines.get(lastForwardIndex).getPoint2().getY() + errorMargin)
+					&& !(lines.get(forwardIndex).getPoint2().getY() < lines.get(lastForwardIndex).getPoint2().getY() - errorMargin)){
+				
+				lines.get(forwardIndex).setPoint2ConnectedIndex(lastForwardIndex);
+				lines.get(lastForwardIndex).setPoint1ConnectedIndex(forwardIndex);
+			}
+			forwardIndex++;
+			
+			if (!(lines.get(backwardIndex).getPoint1().getX() > lines.get(lastBackwardIndex).getPoint1().getX() + errorMargin)  
+					&& !(lines.get(backwardIndex).getPoint1().getX() < lines.get(lastBackwardIndex).getPoint1().getX() - errorMargin)
+					&& !(lines.get(backwardIndex).getPoint1().getY() > lines.get(lastBackwardIndex).getPoint1().getY() + errorMargin)
+					&& !(lines.get(backwardIndex).getPoint1().getY() < lines.get(lastBackwardIndex).getPoint1().getY() - errorMargin)){
+				
+				lines.get(backwardIndex).setPoint1ConnectedIndex(lastBackwardIndex);
+				lines.get(lastBackwardIndex).setPoint2ConnectedIndex(backwardIndex);
+				
+			}else if (!(lines.get(backwardIndex).getPoint2().getX() > lines.get(lastBackwardIndex).getPoint2().getX() + errorMargin)  
+					&& !(lines.get(backwardIndex).getPoint2().getX() < lines.get(lastBackwardIndex).getPoint2().getX() - errorMargin)
+					&& !(lines.get(backwardIndex).getPoint2().getY() > lines.get(lastBackwardIndex).getPoint2().getY() + errorMargin)
+					&& !(lines.get(backwardIndex).getPoint2().getY() < lines.get(lastBackwardIndex).getPoint2().getY() - errorMargin)){
+				
+				lines.get(backwardIndex).setPoint2ConnectedIndex(lastBackwardIndex);
+				lines.get(lastBackwardIndex).setPoint1ConnectedIndex(backwardIndex);
+			}
+			backwardIndex--;
+			if (forwardIndex > backwardIndex){
+				break;
+			}
 		}
 	}
 	
