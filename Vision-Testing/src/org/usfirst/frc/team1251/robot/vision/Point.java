@@ -13,7 +13,7 @@ public class Point {
 		this.Y = Y;
 	}
 
-	public double getX() {
+	public double getX() { 
 		return X;
 	}
 

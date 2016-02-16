@@ -15,6 +15,11 @@ public class ConnectedLines {
 		connectedLines = new ArrayList<>();
 	}
 	
+	public ConnectedLines(Line line){
+		connectedLines = new ArrayList<>();
+		connectedLines.add(line);
+	}
+	
 	public Line get(int index){
 		return connectedLines.get(index);
 	}

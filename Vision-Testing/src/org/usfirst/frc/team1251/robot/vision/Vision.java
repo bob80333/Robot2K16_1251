@@ -12,10 +12,13 @@ public class Vision {
 	private Hashtable<Point, Line> endingPoints;
 	private List<Line> lines= new ArrayList<>();
 	private List<Target> targets = new ArrayList<>();
+	private List<ConnectedLines> connectedLines= new ArrayList<>();
 	private Point lastPoint1;
 	private Point lastPoint2;
 	private Point lastPoint1Backwards;
 	private Point lastPoint2Backwards;
+	// + or - this value is the margin of error between two points to be considered 'connected'
+	private final int errorMargin = 5;
 	double[] lineHeights = {};
 	double[] lineAngles = {};
 	double[] lineX1s = {};
@@ -32,10 +35,14 @@ public class Vision {
 		lastPoint2Backwards = lines.get(lines.size()-1).getPoint2();
 		int forwardIndex = 1;
 		int backwardIndex = lines.size()-2;
-		for (int i = 1; i < lines.size()/2; i++){
-			if (!(lines.get(forwardIndex).getPoint1().getX() > lastPoint1.getX() + 5)){
-				
+		for (int i = 1; i < lines.size(); i++){
+			if (!(lines.get(forwardIndex).getPoint1().getX() > lastPoint1.getX() + errorMargin)  
+					&& !(lines.get(forwardIndex).getPoint1().getX() < lastPoint1.getX() - errorMargin)
+					&& !(lines.get(forwardIndex).getPoint1().getY() > lastPoint1.getY() + errorMargin)  
+					&& !(lines.get(forwardIndex).getPoint1().getY() < lastPoint1.getY() - errorMargin)){
+				connectedLines.add(new ConnectedLines(lines.get(forwardIndex)));
 			}
+			forwardIndex++;
 		}
 	}
 	
