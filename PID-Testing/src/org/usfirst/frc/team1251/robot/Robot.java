@@ -1,77 +1,100 @@
 
-package org.usfirst.frc.team1251.robot;
+package org.usfirst.frc.team1252.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
+/** Dedicated PID testing */
+
 public class Robot extends IterativeRobot {
-    final String defaultAuto = "Default";
-    final String customAuto = "My Auto";
-    String autoSelected;
-    SendableChooser chooser;
 	
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
+	Joystick cMain, cSecond;
+	Victor mShooter;
+	DigitalInput dArm, intake;
+	//Compressor compressor;
+	//Solenoid sArm;
+	Encoder eShooter;
+	AnalogPotentiometer pot;
+	PIDController pidShooter;
+	Double hRPM, lRPM;
+	
     public void robotInit() {
-        chooser = new SendableChooser();
-        chooser.addDefault("Default Auto", defaultAuto);
-        chooser.addObject("My Auto", customAuto);
-        SmartDashboard.putData("Auto choices", chooser);
+    	//RPM variables
+    	hRPM = 5000.0;
+    	lRPM = 2500.0;
+    	
+    	//Joysticks
+    	cMain = new Joystick(0);
+    	cSecond = new Joystick(1);
+    	
+    	//victors
+    	mShooter = new Victor(2);
+    	
+    	//Buttons
+    	dArm = new DigitalInput(3);
+    	intake = new DigitalInput(4);
+    	
+    	//pneumatics
+    	//compressor = new Compressor();
+    	//sArm = new Solenoid(0, 1);
+    	
+    	//encoder / potentiometer
+    	eShooter = new Encoder(1, 2, true, EncodingType.k2X);
+    	pot = new AnalogPotentiometer(2, 180, -0.27);
+    	eShooter.setDistancePerPulse(1.5);
+    	//pid
+    	eShooter.setPIDSourceType(PIDSourceType.kRate);
+    	pot.setPIDSourceType(PIDSourceType.kDisplacement);
+    	pidShooter = new PIDController(0, 0, 0, eShooter, mShooter);
+
     }
     
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
-	 * using the dashboard. The sendable chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
-	 * Dashboard, remove all of the chooser code and uncomment the getString line to get the auto name from the text box
-	 * below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional comparisons to the switch structure below with additional strings.
-	 * If using the SendableChooser make sure to add them to the chooser code above as well.
-	 */
     public void autonomousInit() {
-    	autoSelected = (String) chooser.getSelected();
-//		autoSelected = SmartDashboard.getString("Auto Selector", defaultAuto);
-		System.out.println("Auto selected: " + autoSelected);
+
     }
 
-    /**
-     * This function is called periodically during autonomous
-     */
     public void autonomousPeriodic() {
-    	switch(autoSelected) {
-    	case customAuto:
-        //Put custom auto code here   
-            break;
-    	case defaultAuto:
-    	default:
-    	//Put default auto code here
-            break;
-    	}
+    	
     }
-
-    /**
-     * This function is called periodically during operator control
-     */
+    
+    public void teleopInit() {
+    	pidShooter.setPID(0.00005, 0.0000005, 0.005);
+    }
+    
     public void teleopPeriodic() {
-        
+    	
+    	//button for arm position detection
+    	if (cMain.getRawButton(4) && dArm.get() == true)  {
+    		eShooter.reset();
+    		if (dArm.get() == true) {
+    			mShooter.set(0.5);
+    		}
+    		else {
+    			mShooter.set(0.0);
+    		}
+    	}
+    	else if (cMain.getRawButton(1) && dArm.get() == false) {
+    		eShooter.reset();
+    		if (eShooter.getDistance() < 120) {
+    			mShooter.set(0.5);
+    		}
+    		else {
+    			mShooter.set(0.0);
+    		}
+    	}
+    	
+    	SmartDashboard.putNumber("Motor RPM ", ((eShooter.getRate()/1.5)/360)*60);
+    	SmartDashboard.putNumber("Motor CPS ", eShooter.getRate()/7);
+    	SmartDashboard.putNumber("Original counts ", eShooter.getRate());
+    	SmartDashboard.putNumber("D-pad ", cMain.getPOV());
+    	SmartDashboard.putBoolean("Arm Position ", dArm.get());
+    	SmartDashboard.putNumber("POT ", pot.get());
     }
     
-    /**
-     * This function is called periodically during test mode
-     */
-    public void testPeriodic() {
-    
+    public void disabledInit(){
+    	
     }
     
 }
