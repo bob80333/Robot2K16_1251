@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class Vision {
 	
-	private Hashtable<Point, Line> startingPoints;
-	private Hashtable<Point, Line> endingPoints;
 	private List<Line> lines= new ArrayList<>();
 	private List<Target> targets = new ArrayList<>();
 	private List<ConnectedLines> connectedLines= new ArrayList<>();
@@ -65,8 +63,6 @@ public class Vision {
 	private void updateTablesAndList(){
 		for (int i = 0; i < lineX1s.length; i++){
 			lines.add(new Line (new Point(lineX1s[i],  lineY1s[i]), new Point(lineX2s[i],  lineY2s[i]), lineAngles[i], lineHeights[i]));
-			startingPoints.put(new Point(lineX1s[i],  lineY1s[i]), lines.get(i));
-			endingPoints.put(new Point(lineX2s[i],  lineY2s[i]), lines.get(i));
 		}
 	}
 	
