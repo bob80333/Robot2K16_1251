@@ -19,9 +19,10 @@ public class Vision {
 	double[] lineX2s = {};
 	double[] lineY2s = {};
 	
-	public void findTargets(){
+	public void lockTargets(){
 		updateArraysFromNetwork();
 		updateTablesAndList();
+		findLineConnections();
 	}
 	
 	/**
@@ -94,4 +95,17 @@ public class Vision {
 		}
 	}
 	
+	private void findTargets(){
+		// calculated based on the other 2 factors
+		// numberOfConnections is used this way:
+		// more connections up to the max number of lines in a target, at which point it decreases to 0 over time.
+		// how well do the connections fit the right ratios for length & angle?
+		int currentTargetLikelihood = 0;
+		int numberOfConnetions = 0;
+		// how well do the connections fit the right ratios for length & angle?
+		int connectionQuality = 0;
+		for (int i = 0;i < lines.size(); i++){
+			
+		}
+	}
 }
