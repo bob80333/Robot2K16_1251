@@ -3,6 +3,7 @@ package org.usfirst.frc.team1251.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Main code...
@@ -19,7 +20,7 @@ public class Robot extends IterativeRobot {
 	AnalogPotentiometer Pot;
 	PIDController Pid;
 	
-	double lRev, rRev, revSpeed, lAxis, rAxis;
+	double lRev, rRev, revSpeed, lAxis, rAxis, k_RPM1, k_RPM2;
 	boolean detect;
 	
     public void robotInit() {
@@ -42,6 +43,8 @@ public class Robot extends IterativeRobot {
     	Encoder.setPIDSourceType(PIDSourceType.kRate);
     	Pot.setPIDSourceType(PIDSourceType.kDisplacement);
     	Pid = new PIDController(0, 0, 0, Encoder, mShooter);
+    	k_RPM1 = 2500;
+    	k_RPM2 = 5000;
     }
 
     public void autonomousInit() {
@@ -76,6 +79,18 @@ public class Robot extends IterativeRobot {
         }
         
         if (altController.getRawButton(6)) {
+        	Pid.setSetpoint(((k_RPM1/60)*360)*1.5);
+        	Pid.enable();
+        }
+        else if (altController.getRawButton(7)) {
+        	Pid.setSetpoint(((k_RPM1/60)*360)*1.5);
+        	Pid.enable();
+        }
+        else {
+        	Pid.setSetpoint(0);
+        	Pid.disable();
+        }
+        if (altController.getRawButton(7)) {
         	Pid.enable();
         }
         else {
@@ -99,7 +114,9 @@ public class Robot extends IterativeRobot {
             		mIntake.set(0);
             		detect = false;
             	}
-        }      
+        }
+        
+        SmartDashboard.putNumber("Motor Recolutions/M ", ((Encoder.getRate()/1.5)/360)*60);
         
     }
 
