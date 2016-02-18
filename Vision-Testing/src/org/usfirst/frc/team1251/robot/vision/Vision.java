@@ -21,14 +21,13 @@ public class Vision implements Runnable{
 	double[] lineX2s = {};
 	double[] lineY2s = {};
 	
-	private static boolean lockTargetsPressed = false;
-	private static boolean fireButtonPressed = false;
+	private static boolean lockTargetsPressed;
+	private static boolean fireButtonPressed;
 	
 	Thread thread;
 	
 	public void lockTargets(){
 		updateArraysFromNetwork();
-		updateTablesAndList();
 		findLineConnections();
 		findTargets();
 	}
@@ -38,22 +37,10 @@ public class Vision implements Runnable{
 	 * TODO: Make a good name for the network lines report
 	 */
 	private void updateArraysFromNetwork(){
-		if(NetworkTable.getTable("myLinesReport") != null){
-			lineHeights = NetworkTable.getTable("myLinesReport").getNumberArray("height", lineHeights);
-			lineAngles = NetworkTable.getTable("myLinesReport").getNumberArray("angle", lineAngles);
-			lineX1s = NetworkTable.getTable("myLinesReport").getNumberArray("x1", lineX1s);
-			lineY1s = NetworkTable.getTable("myLinesReport").getNumberArray("y1", lineY1s);
-			lineX2s = NetworkTable.getTable("myLinesReport").getNumberArray("x2", lineX2s);
-			lineY2s = NetworkTable.getTable("myLinesReport").getNumberArray("y2", lineY2s);
-		}
-	}
-	
-	/**
-	 * Puts data from the arrays to the data structures used to process the data
-	 */
-	private void updateTablesAndList(){
-		for (int i = 0; i < lineX1s.length; i++){
-			lines.add(new Line (new Point(lineX1s[i],  lineY1s[i]), new Point(lineX2s[i],  lineY2s[i]), lineAngles[i], lineHeights[i]));
+		if(NetworkTable.getTable("GRIP") != null){
+			for (int i = 0; i < NetworkTable.getTable("GRIP").getNumberArray("myLinesReport/angle", new double[i]).length; i++){
+				lines.add(new Line (new Point(NetworkTable.getTable("GRIP").getNumberArray("myLinesReport/x1", new double[i])[i],  lineY1s[i]), new Point(lineX2s[i],  lineY2s[i]), lineAngles[i], lineHeights[i]));
+			}
 		}
 	}
 	
@@ -64,7 +51,7 @@ public class Vision implements Runnable{
 		int lastBackwardIndex = lines.size() - 1;
 		// make temporary variables so that we don't keep accessing the lines array
 		// efficiency is key, we don't want to affect the rest of the robot program's speed
-		Line forwardLine = lines.get(forwardIndex);
+		Line forwardLine = lines.get(Math.min(forwardIndex, lines.size()));
 		Line lastForwardLine = lines.get(lastForwardIndex);
 		
 		Line backwardLine = lines.get(backwardIndex);
