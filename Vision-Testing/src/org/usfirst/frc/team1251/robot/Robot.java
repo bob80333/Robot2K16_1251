@@ -1,6 +1,8 @@
 
 package org.usfirst.frc.team1251.robot;
 
+import org.usfirst.frc.team1251.robot.vision.Vision;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -12,6 +14,9 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot {
 
+	private static boolean lockTargetsPressed = false;
+	private static boolean fireButtonPressed = false;
+	Thread thread = new Thread(new Vision());
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -25,14 +30,15 @@ public class Robot extends IterativeRobot {
 	 * This function is run once when the robot switches to autonomous
 	 * */
     public void autonomousInit() {
-
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	
+    	if(thread.isAlive()){
+    		thread.run();
+    	}
     }
 
     /**

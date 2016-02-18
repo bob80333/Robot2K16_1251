@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
-public class Vision {
+public class Vision implements Runnable{
 	
 	private List<Line> lines= new ArrayList<>();
 	private List<Target> targets = new ArrayList<>();
@@ -21,10 +21,16 @@ public class Vision {
 	double[] lineX2s = {};
 	double[] lineY2s = {};
 	
+	private static boolean lockTargetsPressed = false;
+	private static boolean fireButtonPressed = false;
+	
+	Thread thread;
+	
 	public void lockTargets(){
 		updateArraysFromNetwork();
 		updateTablesAndList();
 		findLineConnections();
+		findTargets();
 	}
 	
 	/**
@@ -32,12 +38,14 @@ public class Vision {
 	 * TODO: Make a good name for the network lines report
 	 */
 	private void updateArraysFromNetwork(){
-		lineHeights = NetworkTable.getTable("myLinesReport").getNumberArray("height", lineHeights);
-		lineAngles = NetworkTable.getTable("myLinesReport").getNumberArray("angle", lineAngles);
-		lineX1s = NetworkTable.getTable("myLinesReport").getNumberArray("x1", lineX1s);
-		lineY1s = NetworkTable.getTable("myLinesReport").getNumberArray("y1", lineY1s);
-		lineX2s = NetworkTable.getTable("myLinesReport").getNumberArray("x2", lineX2s);
-		lineY2s = NetworkTable.getTable("myLinesReport").getNumberArray("y2", lineY2s);
+		if(NetworkTable.getTable("myLinesReport") != null){
+			lineHeights = NetworkTable.getTable("myLinesReport").getNumberArray("height", lineHeights);
+			lineAngles = NetworkTable.getTable("myLinesReport").getNumberArray("angle", lineAngles);
+			lineX1s = NetworkTable.getTable("myLinesReport").getNumberArray("x1", lineX1s);
+			lineY1s = NetworkTable.getTable("myLinesReport").getNumberArray("y1", lineY1s);
+			lineX2s = NetworkTable.getTable("myLinesReport").getNumberArray("x2", lineX2s);
+			lineY2s = NetworkTable.getTable("myLinesReport").getNumberArray("y2", lineY2s);
+		}
 	}
 	
 	/**
@@ -149,7 +157,7 @@ public class Vision {
 		// how well do the connections fit the right ratios for length & angle?
 		int[] targetLikelihood = {};
 		int[] numberOfConnections = {};
-		// how well do the connections fit the right ratios for length & angle?
+		// how well do the connections fit the right ratios+ for length & angle?
 		int[] connectionQuality = {};
 		for (int i = 0;i < lines.size(); i++){
 			for (List<Line> list : connections){
@@ -168,8 +176,20 @@ public class Vision {
 		for (int i = 0; i < connections.size(); i++){
 			// scary equation
 			// 25x - (25x^2)/(16) = a percentage from number of lines, but will give negative so we use math.max to return 0 or the number
-			// then we average them and round into an integer
+			// then we average them and round into an integer 
 			targetLikelihood[i] = Math.round(Math.round(Math.max(0, (25*numberOfConnections[i] - 25*Math.pow(numberOfConnections[i], 2)/16)) + (connectionQuality[i])/2));
+		}
+		for (int i = 0 ; i < connections.size(); i++){
+			System.out.println("Set of connections " + i + "has a probability of being a target as " + targetLikelihood[i]);
+		}
+	}
+
+	@Override
+	public void run() {
+		if (lockTargetsPressed){
+			lockTargets();
+		}else if (fireButtonPressed){
+			// write code to fire the shooter here
 		}
 	}
 }
