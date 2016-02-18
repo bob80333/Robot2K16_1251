@@ -7,10 +7,14 @@ package org.usfirst.frc.team1251.robot.vision;
  */
 public class Line {
 	
+	// point 1 is the starting point of a line, and point 2 is the ending point.
 	private Point point1;
 	private Point point2;
 	private double angle;
 	private double length;
+	private int point1ConnectedIndex = -1;
+	private int point2ConnectedIndex = -1;
+	
 	
 	public Line(Point point1, Point point2, double angle, double length){
 		this.point1 = point1;
@@ -33,6 +37,22 @@ public class Line {
 
 	public double getLength() {
 		return length;
+	}
+
+	public int getPoint1ConnectedIndex() {
+		return point1ConnectedIndex;
+	}
+
+	public void setPoint1ConnectedIndex(int point1ConnectedIndex) {
+		this.point1ConnectedIndex = point1ConnectedIndex;
+	}
+
+	public int getPoint2ConnectedIndex() {
+		return point2ConnectedIndex;
+	}
+
+	public void setPoint2ConnectedIndex(int point2ConnectedIndex) {
+		this.point2ConnectedIndex = point2ConnectedIndex;
 	}
 
 	public boolean hasPoint(Point point){
