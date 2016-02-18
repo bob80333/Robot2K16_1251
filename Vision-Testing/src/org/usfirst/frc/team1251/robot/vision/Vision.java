@@ -10,6 +10,8 @@ public class Vision {
 	
 	private List<Line> lines= new ArrayList<>();
 	private List<Target> targets = new ArrayList<>();
+	private List<List> connections = new ArrayList<List>();
+	private Hashtable<Line, Integer> groupOfLine = new Hashtable<Line, Integer>();
 	// + or - this value is the margin of error between two points to be considered 'connected'
 	private final int errorMargin = 5;
 	double[] lineHeights = {};
@@ -52,60 +54,122 @@ public class Vision {
 		int lastForwardIndex = 0;
 		int backwardIndex = lines.size() - 2;
 		int lastBackwardIndex = lines.size() - 1;
-		for (int i = 1; i < lines.size(); i++){
+		// make temporary variables so that we don't keep accessing the lines array
+		// efficiency is key, we don't want to affect the rest of the robot program's speed
+		Line forwardLine = lines.get(forwardIndex);
+		Line lastForwardLine = lines.get(lastForwardIndex);
+		
+		Line backwardLine = lines.get(backwardIndex);
+		Line lastBackwardLine = lines.get(lastBackwardIndex);
+		for (int i = 0; i < lines.size(); i++){ 
 			
-			if (!(lines.get(forwardIndex).getPoint1().getX() > lines.get(lastForwardIndex).getPoint1().getX() + errorMargin)  
-					&& !(lines.get(forwardIndex).getPoint1().getX() < lines.get(lastForwardIndex).getPoint1().getX() - errorMargin)
-					&& !(lines.get(forwardIndex).getPoint1().getY() > lines.get(lastForwardIndex).getPoint1().getY() + errorMargin)
-					&& !(lines.get(forwardIndex).getPoint1().getY() < lines.get(lastForwardIndex).getPoint1().getY() - errorMargin)){
+			if (!(forwardLine.getPoint1().getX() > lines.get(lastForwardIndex).getPoint1().getX() + errorMargin)  
+					&& !(forwardLine.getPoint1().getX() < lines.get(lastForwardIndex).getPoint1().getX() - errorMargin)
+					&& !(forwardLine.getPoint1().getY() > lines.get(lastForwardIndex).getPoint1().getY() + errorMargin)
+					&& !(forwardLine.getPoint1().getY() < lines.get(lastForwardIndex).getPoint1().getY() - errorMargin)){
 				
-				lines.get(forwardIndex).setPoint1ConnectedIndex(lastForwardIndex);
-				lines.get(lastForwardIndex).setPoint2ConnectedIndex(forwardIndex);
+				forwardLine.setPoint1ConnectedIndex(lastForwardIndex);
+				lastForwardLine.setPoint2ConnectedIndex(forwardIndex);
+				if (groupOfLine.containsKey(lastForwardLine)){
+					connections.get(groupOfLine.get(forwardLine)).add(forwardLine);
+					groupOfLine.put(forwardLine, groupOfLine.get(lastForwardLine));
+				}else {
+					groupOfLine.put(forwardLine, connections.size());
+					connections.add(new ArrayList<Line>());
+					connections.get(connections.size()-1).add(forwardLine);
+				}
 				
-			}else if (!(lines.get(forwardIndex).getPoint2().getX() > lines.get(lastForwardIndex).getPoint2().getX() + errorMargin)  
-					&& !(lines.get(forwardIndex).getPoint2().getX() < lines.get(lastForwardIndex).getPoint2().getX() - errorMargin)
-					&& !(lines.get(forwardIndex).getPoint2().getY() > lines.get(lastForwardIndex).getPoint2().getY() + errorMargin)
-					&& !(lines.get(forwardIndex).getPoint2().getY() < lines.get(lastForwardIndex).getPoint2().getY() - errorMargin)){
+			}else if (!(forwardLine.getPoint2().getX() > lastForwardLine.getPoint2().getX() + errorMargin)  
+					&& !(forwardLine.getPoint2().getX() < lastForwardLine.getPoint2().getX() - errorMargin)
+					&& !(forwardLine.getPoint2().getY() > lastForwardLine.getPoint2().getY() + errorMargin)
+					&& !(forwardLine.getPoint2().getY() < lastForwardLine.getPoint2().getY() - errorMargin)){
 				
-				lines.get(forwardIndex).setPoint2ConnectedIndex(lastForwardIndex);
-				lines.get(lastForwardIndex).setPoint1ConnectedIndex(forwardIndex);
+				forwardLine.setPoint2ConnectedIndex(lastForwardIndex);
+				lastForwardLine.setPoint1ConnectedIndex(forwardIndex);
+				if (groupOfLine.containsKey(lastForwardLine)){
+					connections.get(groupOfLine.get(lastForwardLine)).add(forwardLine);
+					groupOfLine.put(forwardLine, groupOfLine.get(lastForwardLine));
+				}else {
+					groupOfLine.put(forwardLine, connections.size());
+					connections.add(new ArrayList<Line>());
+					connections.get(connections.size()-1).add(forwardLine);
+				}
 			}
 			forwardIndex++;
 			
-			if (!(lines.get(backwardIndex).getPoint1().getX() > lines.get(lastBackwardIndex).getPoint1().getX() + errorMargin)  
-					&& !(lines.get(backwardIndex).getPoint1().getX() < lines.get(lastBackwardIndex).getPoint1().getX() - errorMargin)
-					&& !(lines.get(backwardIndex).getPoint1().getY() > lines.get(lastBackwardIndex).getPoint1().getY() + errorMargin)
-					&& !(lines.get(backwardIndex).getPoint1().getY() < lines.get(lastBackwardIndex).getPoint1().getY() - errorMargin)){
+			if (!(backwardLine.getPoint1().getX() > lastBackwardLine.getPoint1().getX() + errorMargin)  
+					&& !(backwardLine.getPoint1().getX() < lastBackwardLine.getPoint1().getX() - errorMargin)
+					&& !(backwardLine.getPoint1().getY() > lastBackwardLine.getPoint1().getY() + errorMargin)
+					&& !(backwardLine.getPoint1().getY() < lastBackwardLine.getPoint1().getY() - errorMargin)){
 				
-				lines.get(backwardIndex).setPoint1ConnectedIndex(lastBackwardIndex);
-				lines.get(lastBackwardIndex).setPoint2ConnectedIndex(backwardIndex);
+				backwardLine.setPoint1ConnectedIndex(lastBackwardIndex);
+				lastBackwardLine.setPoint2ConnectedIndex(backwardIndex);
 				
-			}else if (!(lines.get(backwardIndex).getPoint2().getX() > lines.get(lastBackwardIndex).getPoint2().getX() + errorMargin)  
-					&& !(lines.get(backwardIndex).getPoint2().getX() < lines.get(lastBackwardIndex).getPoint2().getX() - errorMargin)
-					&& !(lines.get(backwardIndex).getPoint2().getY() > lines.get(lastBackwardIndex).getPoint2().getY() + errorMargin)
-					&& !(lines.get(backwardIndex).getPoint2().getY() < lines.get(lastBackwardIndex).getPoint2().getY() - errorMargin)){
+				if (groupOfLine.containsKey(lastBackwardLine)){
+					connections.get(groupOfLine.get(lastBackwardLine)).add(backwardLine);
+					groupOfLine.put(backwardLine, groupOfLine.get(lastBackwardLine));
+				}else {
+					groupOfLine.put(forwardLine, connections.size());
+					connections.add(new ArrayList<Line>());
+					connections.get(connections.size()-1).add(forwardLine);
+				}
+			}else if (!(backwardLine.getPoint2().getX() > lastBackwardLine.getPoint2().getX() + errorMargin)  
+					&& !(backwardLine.getPoint2().getX() < lastBackwardLine.getPoint2().getX() - errorMargin)
+					&& !(backwardLine.getPoint2().getY() > lastBackwardLine.getPoint2().getY() + errorMargin)
+					&& !(backwardLine.getPoint2().getY() < lastBackwardLine.getPoint2().getY() - errorMargin)){
 				
-				lines.get(backwardIndex).setPoint2ConnectedIndex(lastBackwardIndex);
-				lines.get(lastBackwardIndex).setPoint1ConnectedIndex(backwardIndex);
+				backwardLine.setPoint2ConnectedIndex(lastBackwardIndex);
+				lastBackwardLine.setPoint1ConnectedIndex(backwardIndex);
+				
+				if (groupOfLine.containsKey(lastForwardLine)){
+					connections.get(groupOfLine.get(lastBackwardLine)).add(backwardLine);
+					groupOfLine.put(backwardLine, groupOfLine.get(lastBackwardLine));
+				}else {
+					groupOfLine.put(backwardLine, connections.size());
+					connections.add(new ArrayList<Line>());
+					connections.get(connections.size()-1).add(backwardLine);
+				}
 			}
 			backwardIndex--;
 			if (forwardIndex > backwardIndex){
 				break;
 			}
+			forwardLine = lines.get(forwardIndex);
+			lastForwardLine = forwardLine;
+			
+			backwardLine = lines.get(backwardIndex);
+			lastBackwardLine = backwardLine;
+			}
 		}
-	}
 	
 	private void findTargets(){
 		// calculated based on the other 2 factors
 		// numberOfConnections is used this way:
 		// more connections up to the max number of lines in a target, at which point it decreases to 0 over time.
 		// how well do the connections fit the right ratios for length & angle?
-		int currentTargetLikelihood = 0;
-		int numberOfConnetions = 0;
+		int[] targetLikelihood = {};
+		int[] numberOfConnections = {};
 		// how well do the connections fit the right ratios for length & angle?
-		int connectionQuality = 0;
+		int[] connectionQuality = {};
 		for (int i = 0;i < lines.size(); i++){
-			
+			for (List<Line> list : connections){
+				for (Line line : list){
+					if (numberOfConnections[groupOfLine.get(line)] > 0){
+						numberOfConnections[groupOfLine.get(line)]++;
+					}else{
+						numberOfConnections[groupOfLine.get(line)] = 1;
+					}
+					
+				}
+				connectionQuality[connections.indexOf(list)] = 100;
+			}
+		}
+		
+		for (int i = 0; i < connections.size(); i++){
+			// scary equation
+			// 25x - (25x^2)/(16) = a percentage from number of lines, but will give negative so we use math.max to return 0 or the number
+			// then we average them and round into an integer
+			targetLikelihood[i] = Math.round(Math.round(Math.max(0, (25*numberOfConnections[i] - 25*Math.pow(numberOfConnections[i], 2)/16)) + (connectionQuality[i])/2));
 		}
 	}
 }
