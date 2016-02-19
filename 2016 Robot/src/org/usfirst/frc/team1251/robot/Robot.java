@@ -103,10 +103,10 @@ public class Robot extends IterativeRobot {
         }
         
         //Hood up and down
-        if (operatorController.getPOV() = 0) {
+        if (operatorController.getPOV() == 0) {
         	shooterHood.set(true);
         }
-        else if (operatorController.getPOV() = 180) {
+        else if (operatorController.getPOV() == 180) {
         	shooterHood.set(false);
         }
         
@@ -170,6 +170,5 @@ public class Robot extends IterativeRobot {
         
         //SmartDashboard information
         SmartDashboard.putNumber("Motor Revolutions/M ", ((Encoder.getRate()/1.5)/360)*60);
-        SmartDashboard.putNumber("D-pad ", operatorController.getPOV());
     }   
 }
