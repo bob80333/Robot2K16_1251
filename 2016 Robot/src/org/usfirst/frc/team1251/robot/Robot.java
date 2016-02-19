@@ -15,7 +15,7 @@ public class Robot extends IterativeRobot {
 	Joystick driveController, operatorController;
 	Victor mCollector, mShooter;
 	Compressor compressor;
-	Solenoid collectorArm;
+	Solenoid collectorArm, shooterHood;
 	DigitalInput collectorDetect;
 	Encoder Encoder;
 	AnalogPotentiometer Pot;
@@ -42,8 +42,9 @@ public class Robot extends IterativeRobot {
     	lAxis = driveController.getRawAxis(0);
     	rAxis = driveController.getRawAxis(1);
     	
-    	//Solenoids using pneumatics slot 1, 2
+    	//Solenoids using pneumatics slot 0, 1
     	collectorArm = new Solenoid(0);
+    	shooterHood = new Solenoid(1);
     	
     	//Button detector using DIO 0
     	collectorDetect = new DigitalInput(0); 
@@ -99,6 +100,14 @@ public class Robot extends IterativeRobot {
         }
         if (driveController.getRawButton(2)) { //down
         	collectorArm.set(false);
+        }
+        
+        //Hood up and down
+        if (operatorController.getPOV() = 0) {
+        	shooterHood.set(true);
+        }
+        else if (operatorController.getPOV() = 180) {
+        	shooterHood.set(false);
         }
         
         //Shooter multi-RPM
@@ -161,5 +170,6 @@ public class Robot extends IterativeRobot {
         
         //SmartDashboard information
         SmartDashboard.putNumber("Motor Revolutions/M ", ((Encoder.getRate()/1.5)/360)*60);
+        SmartDashboard.putNumber("D-pad ", operatorController.getPOV());
     }   
 }
