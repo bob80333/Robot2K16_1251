@@ -39,8 +39,8 @@ public class Robot extends IterativeRobot {
     	operatorController = new Joystick(1);
     	
     	//Declaring variables to driver axis
-    	lAxis = driveController.getRawAxis(0);
-    	rAxis = driveController.getRawAxis(1);
+    	lAxis = driveController.getRawAxis(1);
+    	rAxis = driveController.getRawAxis(3);
     	
     	//Solenoids using pneumatics slot 0, 1
     	collectorArm = new Solenoid(0);
@@ -131,7 +131,7 @@ public class Robot extends IterativeRobot {
         		mCollector.set(0);
         	}
         }
-        else if (operatorController.getRawButton(6)) { //Medium 2
+        else if (operatorController.getRawButton(7)) { //Medium 2
         	Pid.setSetpoint(((k_RPM3/60)*360)*1.5);
         	Pid.enable();
         	if (operatorController.getRawButton(2) && detect) {
@@ -141,7 +141,7 @@ public class Robot extends IterativeRobot {
         		mCollector.set(0);
         	}
         }
-        else if (operatorController.getRawButton(6)) { //High
+        else if (operatorController.getRawButton(8)) { //High
         	Pid.setSetpoint(((k_RPM4/60)*360)*1.5);
         	Pid.enable();
         	if (operatorController.getRawButton(2) && detect) {
