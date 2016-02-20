@@ -16,10 +16,11 @@ public class Robot extends IterativeRobot {
 	Victor mCollector, mShooter;
 	Compressor compressor;
 	Solenoid collectorArm, shooterHood;
-	DigitalInput collectorDetect;
+	DigitalInput ballDetect;
 	Encoder Encoder;
 	AnalogPotentiometer Pot;
 	PIDController Pid;
+	String armPosition, hoodPosition, shooterSpeed;
 	double lRev=0, rRev=0, lAxis, rAxis;
 	boolean detect;
 	
@@ -38,23 +39,19 @@ public class Robot extends IterativeRobot {
     	driveController = new Joystick(0);
     	operatorController = new Joystick(1);
     	
-    	//Declaring variables to driver axis
-    	lAxis = driveController.getRawAxis(1);
-    	rAxis = driveController.getRawAxis(3);
-    	
     	//Solenoids using pneumatics slot 0, 1
     	collectorArm = new Solenoid(0);
     	shooterHood = new Solenoid(1);
     	
     	//Button detector using DIO 0
-    	collectorDetect = new DigitalInput(0); 
+    	ballDetect = new DigitalInput(0); 
     	
     	//Motors using PWM 4, 5
     	mCollector = new Victor(4);
     	mShooter = new Victor(5);
     	
-    	//Encoder using DIO 0, 1, 2
-    	Encoder = new Encoder(1, 2, true, EncodingType.k2X);
+    	//Encoder using DIO 1, 2, 3
+    	Encoder = new Encoder(2, 3, true, EncodingType.k2X);
     	
     	//Potentiometer using analog 3
     	Pot = new AnalogPotentiometer(3, 180, -0.27);
@@ -63,7 +60,7 @@ public class Robot extends IterativeRobot {
     	Encoder.setDistancePerPulse(1.5);
     	Encoder.setPIDSourceType(PIDSourceType.kRate);
     	Pot.setPIDSourceType(PIDSourceType.kDisplacement);
-    	Pid = new PIDController(0, 0, 0, Encoder, mShooter);
+    	Pid = new PIDController(0.05, 0.005, 0.5, Encoder, mShooter);
     }
 
     public void autonomousInit() {
@@ -75,20 +72,29 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit() {
-    	Pid.setPID(0.00005, 0.0000005, 0.005);
     	Pid.disable();
     }
 
     public void teleopPeriodic() {
-    	//collector detection
-    	detect = collectorDetect.get();
+    	//Declaring variable to detector button
+    	detect = ballDetect.get();
+    	
+    	//Declaring variables to driver axis
+    	lAxis = driveController.getRawAxis(1);
+    	rAxis = driveController.getRawAxis(3);
     	
     	//Drive rev up
-    	if (lAxis != 0) {
+    	if (lAxis > lRev) {
     		lRev += revSpeed;
     	}
-    	if (rAxis != 0) {
+    	else {
+    		lRev -= revSpeed;
+    	}
+    	if (rAxis > rRev) {
     		rRev += revSpeed;
+    	}
+    	else {
+    		rRev -= revSpeed;
     	}
     	
     	//Drive base movement
@@ -97,23 +103,28 @@ public class Robot extends IterativeRobot {
     	//Collector arm up and down
         if (driveController.getRawButton(3)) { //up
         	collectorArm.set(true);
+        	armPosition = "Up";
         }
         if (driveController.getRawButton(2)) { //down
         	collectorArm.set(false);
+        	armPosition = "Down";
         }
         
         //Hood up and down
         if (operatorController.getPOV() == 0) {
         	shooterHood.set(true);
+        	hoodPosition = "Up";
         }
         else if (operatorController.getPOV() == 180) {
         	shooterHood.set(false);
+        	hoodPosition = "Down";
         }
         
         //Shooter multi-RPM
         if (operatorController.getRawButton(5)) { //Low
         	Pid.setSetpoint(((k_RPM1/60)*360)*1.5);
         	Pid.enable();
+        	shooterSpeed = "Low";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -124,6 +135,7 @@ public class Robot extends IterativeRobot {
         else if (operatorController.getRawButton(6)) { //Medium 1
         	Pid.setSetpoint(((k_RPM2/60)*360)*1.5);
         	Pid.enable();
+        	shooterSpeed = "Medium 1";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -134,6 +146,7 @@ public class Robot extends IterativeRobot {
         else if (operatorController.getRawButton(7)) { //Medium 2
         	Pid.setSetpoint(((k_RPM3/60)*360)*1.5);
         	Pid.enable();
+        	shooterSpeed = "Medium 2";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -144,6 +157,7 @@ public class Robot extends IterativeRobot {
         else if (operatorController.getRawButton(8)) { //High
         	Pid.setSetpoint(((k_RPM4/60)*360)*1.5);
         	Pid.enable();
+        	shooterSpeed = "High";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -170,5 +184,9 @@ public class Robot extends IterativeRobot {
         
         //SmartDashboard information
         SmartDashboard.putNumber("Motor Revolutions/M ", ((Encoder.getRate()/1.5)/360)*60);
+        SmartDashboard.putNumber("Joystick D-pad ", driveController.getPOV());
+        SmartDashboard.putString("Arm position ", armPosition);
+        SmartDashboard.putString("Hood Position ", hoodPosition);
+        SmartDashboard.putString("Shooter setting ", shooterSpeed);
     }   
 }
