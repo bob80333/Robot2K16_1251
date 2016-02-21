@@ -59,5 +59,6 @@ public class Line {
 		// return statement that does the stuff instead of an if #advanced
 		return (point1.equals(point) || point2.equals(point));
 	}
+	
 
 }

@@ -11,21 +11,19 @@ public class Target {
 	private double area;
 	private double centerX;
 	private double centerY;
-	private double topY;
-	private double bottomY;
-	private double leftX;
-	private double rightX;
+    private double actualDistance;
+    private Line left;
+    private Line right;
 	
-	public Target (double width, double height, double topY, double bottomY, double leftX, double rightX){
+	public Target (double width, double height, double area, double centerX, double centerY, double actualDistance, Line left, Line right){
 		this.width = width;
 		this.height = height;
-		this.area = width * height;
-		this.centerX = (leftX + rightX)/2;
-		this.centerY = (topY + bottomY) / 2;
-		this.topY = topY;
-		this.bottomY = bottomY;
-		this.leftX = leftX;
-		this.rightX = rightX;
+		this.area = area;
+		this.centerX = centerX;
+		this.centerY = centerY;
+		this.actualDistance = actualDistance;
+		this.left = left;
+		this.right = right;
 	}
 
 	public double getWidth() {
@@ -48,19 +46,17 @@ public class Target {
 		return centerY;
 	}
 
-	public double getTopY() {
-		return topY;
+	public double getActualDistance() {
+		return actualDistance;
 	}
 
-	public double getBottomY() {
-		return bottomY;
+	public Line getLeft() {
+		return left;
 	}
 
-	public double getLeftX() {
-		return leftX;
+	public Line getRight() {
+		return right;
 	}
 
-	public double getRightX() {
-		return rightX;
-	}
+
 }
