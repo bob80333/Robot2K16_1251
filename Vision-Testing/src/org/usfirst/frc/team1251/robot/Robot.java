@@ -1,6 +1,9 @@
 
 package org.usfirst.frc.team1251.robot;
 
+import java.util.List;
+
+import org.usfirst.frc.team1251.robot.vision.Target;
 import org.usfirst.frc.team1251.robot.vision.Vision;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -16,6 +19,7 @@ public class Robot extends IterativeRobot {
 
 	private static boolean lockTargetsPressed = false;
 	private static boolean fireButtonPressed = false;
+	private static List<Target> targets;
 	Thread thread = new Thread(new Vision());
     /**
      * This function is run when the robot is first started up and should be

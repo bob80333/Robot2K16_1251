@@ -10,7 +10,7 @@ public class Vision implements Runnable{
 	
 	private List<Line> lines= new ArrayList<>();
 	private List<Line> targetSides = new ArrayList<>();
-	private List<Target> targets = new ArrayList<>();
+	private static List<Target> targets = new ArrayList<>();
 	private List<Contour> contours = new ArrayList<>();
 	private List<SidedContour> sidedContours = new ArrayList<>();
 	private Hashtable<Line, Integer> targetSideIndexes = new Hashtable();
@@ -100,8 +100,8 @@ public class Vision implements Runnable{
 								contourIndex.put(line, i);
 							}else if(targetHasRightSide.get(targetSideIndexes.get(line2))
 									&& !targetHasLeftSide.get(targetSideIndexes.get(line2))
-									&& line.getPoint1().getX() > line2.getPoint1().getX() + errorMargin
-									&& line.getPoint2().getX() > line2.getPoint2().getX() + errorMargin){
+									&& line.getPoint1().getX() < line2.getPoint1().getX() - errorMargin
+									&& line.getPoint2().getX() < line2.getPoint2().getX() - errorMargin){
 								targetSides.add(line);
 								targetSideIndexes.put(line, targetSides.size() - 1);
 								targetHasRightSide.put(targetSides.size() - 1, true);
