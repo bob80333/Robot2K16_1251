@@ -21,8 +21,8 @@ public class Robot extends IterativeRobot {
 	AnalogPotentiometer Pot;
 	PIDController Pid;
 	String armPosition="down", hoodPosition="down", shooterSpeed="off";
-	double lRev=0, rRev=0, lAxis, rAxis;
-	boolean detect;
+	double lRev=0, rRev=0, lAxis=0, rAxis=0;
+	boolean detect=	false;
 	
 	final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
