@@ -17,19 +17,19 @@ import org.usfirst.frc.team1251.robot.vision.Vision;
  */
 
 public class Robot extends IterativeRobot {
-	RobotDrive driveBase;
-	Joystick driveController, operatorController;
-	Victor mCollector, mShooter;
-	Compressor compressor;
-	Solenoid collectorArm, shooterHood;
-	DigitalInput ballDetect;
-	Encoder Encoder;
-	AnalogPotentiometer Pot;
-	PIDController Pid;
-	String armPosition="down", hoodPosition="down", shooterSpeed="off";
-	double lRev=0, rRev=0, lAxis, rAxis;
-	boolean detect;
-	Thread Vision;
+	private RobotDrive driveBase;
+	private Joystick driveController, operatorController;
+	private Victor mCollector, mShooter;
+	private Compressor compressor;
+	private Solenoid collectorArm, shooterHood;
+	private DigitalInput ballDetect;
+	private Encoder Encoder;
+	private AnalogPotentiometer Pot;
+	private PIDController Pid;
+	private String armPosition="down", hoodPosition="down", shooterSpeed="off";
+	private double lRev=0, rRev=0, lAxis, rAxis;
+	private boolean detect;
+	private Thread Vision;
 	private static boolean lockTargetsPressed = false;
 	private static boolean fireButtonPressed = false;
 	private static List<Target> targets = new ArrayList<>();
