@@ -1,8 +1,14 @@
 package org.usfirst.frc.team1251.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.usfirst.frc.team1251.robot.vision.Target;
+import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
  * This is the main code for team 1251's 2016 robot.
@@ -23,6 +29,10 @@ public class Robot extends IterativeRobot {
 	String armPosition="down", hoodPosition="down", shooterSpeed="off";
 	double lRev=0, rRev=0, lAxis, rAxis;
 	boolean detect;
+	Thread Vision;
+	private static boolean lockTargetsPressed = false;
+	private static boolean fireButtonPressed = false;
+	private static List<Target> targets = new ArrayList<>();
 	
 	final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
@@ -61,13 +71,22 @@ public class Robot extends IterativeRobot {
     	Encoder.setPIDSourceType(PIDSourceType.kRate);
     	Pot.setPIDSourceType(PIDSourceType.kDisplacement);
     	Pid = new PIDController(0.05, 0.005, 0.5, Encoder, mShooter);
+    	
+    	Vision = new Thread(new Vision(), "Vision-Tracking");
     }
 
     public void autonomousInit() {
-
+    	Vision.run();
     }
     
     public void autonomousPeriodic() {
+    	//Runs the vision code
+    	if (Vision.isAlive()){
+    		Vision.notify();
+    		Vision.run();
+    	}else{
+    		Vision.run();
+    	}
 
     }
     
