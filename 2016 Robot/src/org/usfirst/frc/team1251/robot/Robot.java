@@ -1,8 +1,14 @@
 package org.usfirst.frc.team1251.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.usfirst.frc.team1251.robot.vision.Target;
+import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
  * This is the main code for team 1251's 2016 robot.
@@ -11,18 +17,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class Robot extends IterativeRobot {
-	RobotDrive driveBase;
-	Joystick driveController, operatorController;
-	Victor mCollector, mShooter;
-	Compressor compressor;
-	Solenoid collectorArm, shooterHood;
-	DigitalInput ballDetect;
-	Encoder Encoder;
-	AnalogPotentiometer Pot;
-	PIDController Pid;
-	String armPosition="down", hoodPosition="down", shooterSpeed="off";
-	double lRev=0, rRev=0, lAxis=0, rAxis=0;
-	boolean detect=	false;
+
+	private RobotDrive driveBase;
+	private Joystick driveController, operatorController;
+	private Victor mCollector, mShooter;
+	private Compressor compressor;
+	private Solenoid collectorArm, shooterHood;
+	private DigitalInput ballDetect;
+	private Encoder Encoder;
+	private AnalogPotentiometer Pot;
+	private PIDController Pid;
+	private String armPosition="down", hoodPosition="down", shooterSpeed="off";
+	private double lRev=0, rRev=0, lAxis, rAxis;
+	private boolean detect;
+	private Thread Vision;
+	private static boolean lockTargetsPressed = false;
+	private static boolean fireButtonPressed = false;
+	private static List<Target> targets = new ArrayList<>();
 	
 	final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
@@ -61,13 +72,22 @@ public class Robot extends IterativeRobot {
     	Encoder.setPIDSourceType(PIDSourceType.kRate);
     	Pot.setPIDSourceType(PIDSourceType.kDisplacement);
     	Pid = new PIDController(0.05, 0.005, 0.5, Encoder, mShooter);
+    	
+    	Vision = new Thread(new Vision(), "Vision-Tracking");
     }
 
     public void autonomousInit() {
-
+    	Vision.run();
     }
     
     public void autonomousPeriodic() {
+    	//Runs the vision code
+    	if (Vision.isAlive()){
+    		Vision.notify();
+    		Vision.run();
+    	}else{
+    		Vision.run();
+    	}
 
     }
     
