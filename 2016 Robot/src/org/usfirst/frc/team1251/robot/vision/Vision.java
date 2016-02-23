@@ -173,6 +173,12 @@ public class Vision implements Runnable{
 			lockTargets();
 		}else if (fireButtonPressed){
 			// write code to fire the shooter here
+		}else{
+			try {
+				wait();
+			} catch (InterruptedException e) {
+
+			}
 		}
 	}
 }
