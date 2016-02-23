@@ -50,6 +50,9 @@ public class Robot extends IterativeRobot {
     	driveController = new Joystick(0);
     	operatorController = new Joystick(1);
     	
+    	//Compressor
+    	compressor = new Compressor();
+    	
     	//Solenoids using pneumatics slot 0, 1
     	collectorArm = new Solenoid(0);
     	shooterHood = new Solenoid(1);
@@ -93,6 +96,7 @@ public class Robot extends IterativeRobot {
     
     public void teleopInit() {
     	Pid.disable();
+    	compressor.start();
     }
 
     public void teleopPeriodic() {
@@ -208,6 +212,10 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Joystick D-pad ", driveController.getPOV());
         SmartDashboard.putString("Arm position ", armPosition);
         SmartDashboard.putString("Hood Position ", hoodPosition);
-        SmartDashboard.putString("Shooter setting ", shooterSpeed);
+        SmartDashboard.putString("Shooter setting ", shooterSpeed);    
     }   
+    
+    public void disable() {
+    	compressor.stop();
+    }
 }
