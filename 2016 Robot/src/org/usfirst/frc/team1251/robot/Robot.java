@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team1251.robot.vision.Target;
 import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
@@ -33,7 +32,8 @@ public class Robot extends IterativeRobot {
 	private Thread Vision;
 	private static boolean lockTargetsPressed = false;
 	private static boolean fireButtonPressed = false;
-	private static List<Target> targets = new ArrayList<>();
+	private static double anglesToTarget[] = {};
+	private static double distancesToTarget[] = {};
 	
 	final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
