@@ -50,6 +50,7 @@ public class Vision implements Runnable{
 						&& contours.get(i).getArea() < distanceTable[1][previousJ]){
 					yIntercept = -(distanceTable[1][j] - distanceTable[1][previousJ] * distanceTable[1][j]) + distanceTable[0][previousJ];
 					distancesToTarget[i] = 1/(distanceTable[1][j] - distanceTable[1][previousJ]) * (contours.get(i).getArea() - yIntercept);
+					previousJ++;
 				}
 			}
 		}
