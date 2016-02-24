@@ -11,16 +11,18 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public class Vision implements Runnable{
 
 	private List<Contour> contours = new ArrayList<>();
-	private final double cameraCenterX = 360.0;
-	private final double cameraCenterY = 640.0;
-	private static double anglesToTarget[] = {};
-	private static double distancesToTarget[] = {};
+	private final double cameraCenterX = 640.0;
+	private static double[] anglesToTarget = {};
+	private static double[] distancesToTarget = {};
+	//TODO: Change the distance values to better, newer test data
+	private double[][] distanceTable = {{1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 6.0, 6.0, 7.0, 7.0, 8.0, 8.0, 9.0, 9.0, 10.0, 10.0}, 
+										{35000.0, 31000.0, 15470.0, 15300.0, 9040.0, 8880.0, 4140.0, 3980.0, 2170.0, 2060.0, 1540.0, 1470.0, 1110.0, 1040.0, 740.0, 680.0, 580.0, 530.0, 430.0, 390.0}};
 	private static boolean lockTargetsPressed;
 	private static boolean fireButtonPressed;
 	
 	public void lockTargets(){
 		updateDataFromNetwork();
-		
+		findDistanceToCamera();
 		findAngleToCamera();
 	}
 	
@@ -38,12 +40,25 @@ public class Vision implements Runnable{
 		}
 	}
 	
+	private void findDistanceToCamera(){
+		double yIntercept = 0.0;
+		for (int i = 0; i < contours.size(); i++){
+			int previousJ = 0;
+			for (int j = 1; j < distanceTable.length; j++){
+				if (contours.get(i).getArea() > distanceTable[1][j]
+						&& contours.get(i).getArea() < distanceTable[1][previousJ]){
+					yIntercept = -(distanceTable[1][j] - distanceTable[1][previousJ] * distanceTable[1][j]) + distanceTable[0][previousJ];
+					distancesToTarget[i] = 1/(distanceTable[1][j] - distanceTable[1][previousJ]) * (contours.get(i).getArea() - yIntercept);
+					previousJ++;
+				}
+			}
+		}
+	}
+	
 	private void findAngleToCamera(){
 		double targetCenterX = 0.0;
-		double targetCenterY = 0.0;
 		for(int i = 0; i < contours.size(); i++){
 			targetCenterX = contours.get(i).getCenterX();
-			targetCenterY = contours.get(i).getCenterY();
 			anglesToTarget[i] = Math.tan((targetCenterX - cameraCenterX)/(distancesToTarget[i]));
 		}
 	}

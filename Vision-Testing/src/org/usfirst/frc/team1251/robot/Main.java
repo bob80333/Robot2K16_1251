@@ -7,6 +7,9 @@ public class Main {
 	private static boolean fireButtonPressed = false;
 	public static void main(String[] args){
 		Vision vision = new Vision();
-		vision.lockTargets();
+		lockTargetsPressed = true;
+		fireButtonPressed = false;
+		vision.run();
+		
 	}
 }
