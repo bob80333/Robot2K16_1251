@@ -1,8 +1,5 @@
 package org.usfirst.frc.team1251.robot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,19 +20,17 @@ public class Robot extends IterativeRobot {
 	private Compressor compressor;
 	private Solenoid collectorArm, shooterHood;
 	private DigitalInput ballDetect;
-	private Encoder Encoder;
+	private Encoder shooterSpeed;
 	private AnalogPotentiometer Pot;
 	private PIDController Pid;
-	private String armPosition="down", hoodPosition="down", shooterSpeed="off";
+	private String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
 	private double lRev=0, rRev=0, lAxis, rAxis;
 	private boolean detect;
-	private Thread Vision;
-	private static boolean lockTargetsPressed = false;
-	private static boolean fireButtonPressed = false;
+	private Thread vision;
 	private static double anglesToTarget[] = {};
 	private static double distancesToTarget[] = {};
 	
-	final double /** Changeable constant values */
+	private final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
 			k_RPM1 = 1000, 	//Low RPM speed
 			k_RPM2 = 2000,	//Mid 1 RPM speed
@@ -65,31 +60,31 @@ public class Robot extends IterativeRobot {
     	mShooter = new Victor(5);
     	
     	//Encoder using DIO 1, 2, 3
-    	Encoder = new Encoder(2, 3, true, EncodingType.k2X);
+    	shooterSpeed = new Encoder(2, 3, true, EncodingType.k2X);
     	
     	//Potentiometer using analog 3
     	Pot = new AnalogPotentiometer(3, 360, 0);
     	
     	//PID decelerations
-    	Encoder.setDistancePerPulse(1.5);
-    	Encoder.setPIDSourceType(PIDSourceType.kRate);
+    	shooterSpeed.setDistancePerPulse(1.5);
+    	shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
     	Pot.setPIDSourceType(PIDSourceType.kDisplacement);
-    	Pid = new PIDController(0.05, 0.005, 0.5, Encoder, mShooter);
+    	Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
     	
-    	Vision = new Thread(new Vision(), "Vision-Tracking");
+    	vision = new Thread(new Vision(), "Vision-Tracking");
     }
 
     public void autonomousInit() {
-    	Vision.run();
+    	vision.run();
     }
     
     public void autonomousPeriodic() {
     	//Runs the vision code
-    	if (Vision.isAlive()){
-    		Vision.notify();
-    		Vision.run();
+    	if (vision.isAlive()){
+    		vision.notify();
+    		vision.run();
     	}else{
-    		Vision.run();
+    		vision.run();
     	}
 
     }
@@ -148,7 +143,7 @@ public class Robot extends IterativeRobot {
         if (operatorController.getRawButton(5)) { //Low
         	Pid.setSetpoint(((k_RPM1/60)*360)*1.5);
         	Pid.enable();
-        	shooterSpeed = "Low";
+        	shooterSpeedDisplayed = "Low";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -159,7 +154,7 @@ public class Robot extends IterativeRobot {
         else if (operatorController.getRawButton(6)) { //Medium 1
         	Pid.setSetpoint(((k_RPM2/60)*360)*1.5);
         	Pid.enable();
-        	shooterSpeed = "Medium 1";
+        	shooterSpeedDisplayed = "Medium 1";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -170,7 +165,7 @@ public class Robot extends IterativeRobot {
         else if (operatorController.getRawButton(7)) { //Medium 2
         	Pid.setSetpoint(((k_RPM3/60)*360)*1.5);
         	Pid.enable();
-        	shooterSpeed = "Medium 2";
+        	shooterSpeedDisplayed = "Medium 2";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -181,7 +176,7 @@ public class Robot extends IterativeRobot {
         else if (operatorController.getRawButton(8)) { //High
         	Pid.setSetpoint(((k_RPM4/60)*360)*1.5);
         	Pid.enable();
-        	shooterSpeed = "High";
+        	shooterSpeedDisplayed = "High";
         	if (operatorController.getRawButton(2) && detect) {
             	mCollector.set(1);
             }
@@ -192,7 +187,7 @@ public class Robot extends IterativeRobot {
         else { //PID off
         	Pid.setSetpoint(0);
         	Pid.disable();
-        	shooterSpeed = "off";
+        	shooterSpeedDisplayed = "off";
         }
         
         //Collector detection 
@@ -208,11 +203,11 @@ public class Robot extends IterativeRobot {
         
         
         //SmartDashboard information
-        SmartDashboard.putNumber("Motor Revolutions/M ", ((Encoder.getRate()/1.5)/360)*60);
+        SmartDashboard.putNumber("Motor Revolutions/M ", ((shooterSpeed.getRate()/1.5)/360)*60);
         SmartDashboard.putNumber("Joystick D-pad ", driveController.getPOV());
         SmartDashboard.putString("Arm position ", armPosition);
         SmartDashboard.putString("Hood Position ", hoodPosition);
-        SmartDashboard.putString("Shooter setting ", shooterSpeed);    
+        SmartDashboard.putString("Shooter setting ", shooterSpeedDisplayed);
     }   
     
     public void disable() {
