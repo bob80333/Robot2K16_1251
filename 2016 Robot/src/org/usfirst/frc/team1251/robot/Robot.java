@@ -26,7 +26,8 @@ public class Robot extends IterativeRobot {
 	private String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
 	private double lRev=0, rRev=0, lAxis, rAxis;
 	private boolean detect;
-	private Thread vision;
+    private Vision vision;
+	private Thread visionThread;
 	private static double anglesToTarget[] = {};
 	private static double distancesToTarget[] = {};
 	
@@ -70,22 +71,24 @@ public class Robot extends IterativeRobot {
     	shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
     	Pot.setPIDSourceType(PIDSourceType.kDisplacement);
     	Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
-    	
-    	vision = new Thread(new Vision(), "Vision-Tracking");
+    	vision = new Vision();
+    	visionThread = new Thread(vision, "Vision-Tracking");
     }
 
     public void autonomousInit() {
-    	vision.run();
+    	visionThread.run();
     }
     
     public void autonomousPeriodic() {
-    	//Runs the vision code
-    	if (vision.isAlive()){
-    		vision.notify();
-    		vision.run();
+    	//Runs the visionThread code
+    	if (visionThread.isAlive()){
+    		visionThread.notify();
+    		visionThread.run();
     	}else{
-    		vision.run();
+    		visionThread.run();
     	}
+        anglesToTarget  = vision.getTargetAngles();
+        distancesToTarget = vision.getTargetDistances();
 
     }
     

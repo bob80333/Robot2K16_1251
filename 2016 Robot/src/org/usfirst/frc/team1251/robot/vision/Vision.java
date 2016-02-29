@@ -17,8 +17,8 @@ public class Vision implements Runnable{
 	//TODO: Change the distance values to better, newer test data
 	private double[][] distanceTable = {{1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 6.0, 6.0, 7.0, 7.0, 8.0, 8.0, 9.0, 9.0, 10.0, 10.0}, 
 										{35000.0, 31000.0, 15470.0, 15300.0, 9040.0, 8880.0, 4140.0, 3980.0, 2170.0, 2060.0, 1540.0, 1470.0, 1110.0, 1040.0, 740.0, 680.0, 580.0, 530.0, 430.0, 390.0}};
-	private static boolean lockTargetsPressed;
-	private static boolean fireButtonPressed;
+	private boolean lockTargetsPressed;
+	private boolean fireButtonPressed;
 	
 	public void lockTargets(){
 		updateDataFromNetwork();
@@ -29,6 +29,7 @@ public class Vision implements Runnable{
 	/**
 	 * Gets the data from network tables
 	 * TODO: Make a good name for the network contours report
+	 * Possible TODO: make up own networking protocol
 	 */
 	private void updateDataFromNetwork(){
 		if(NetworkTable.getTable("GRIP") != null){
@@ -67,6 +68,22 @@ public class Vision implements Runnable{
 	private double getNetwork(String str, int i){
 		return NetworkTable.getTable("GRIP").getNumberArray("str", new double[0])[i];
 	}
+
+    public synchronized void setLockTargetsPressed(boolean lockTargetsPressed){
+        this.lockTargetsPressed = lockTargetsPressed;
+    }
+
+    public synchronized void setFireButtonPressed(boolean fireButtonPressed){
+        this.fireButtonPressed = fireButtonPressed;
+    }
+
+    public synchronized double[] getTargetAngles(){
+        return anglesToTarget;
+    }
+
+    public synchronized double[] getTargetDistances(){
+        return distancesToTarget;
+    }
 
 	@Override
 	public void run() {
