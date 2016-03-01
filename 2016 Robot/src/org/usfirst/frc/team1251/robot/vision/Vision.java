@@ -12,8 +12,9 @@ public class Vision implements Runnable{
 
 	private List<Contour> contours = new ArrayList<>();
 	private final double cameraCenterX = 640.0;
-	private static double[] anglesToTarget = {};
-	private static double[] distancesToTarget = {};
+	private double[] anglesToTarget = {};
+	private double[] distancesToTarget = {};
+    private double[][] targetData = {};
 	//TODO: Change the distance values to better, newer test data
 	private double[][] distanceTable = {{1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 6.0, 6.0, 7.0, 7.0, 8.0, 8.0, 9.0, 9.0, 10.0, 10.0}, 
 										{35000.0, 31000.0, 15470.0, 15300.0, 9040.0, 8880.0, 4140.0, 3980.0, 2170.0, 2060.0, 1540.0, 1470.0, 1110.0, 1040.0, 740.0, 680.0, 580.0, 530.0, 430.0, 390.0}};
@@ -24,6 +25,7 @@ public class Vision implements Runnable{
 		updateDataFromNetwork();
 		findDistanceToCamera();
 		findAngleToCamera();
+        targetData = new double[][]{distancesToTarget, anglesToTarget};
 	}
 	
 	/**
@@ -78,12 +80,12 @@ public class Vision implements Runnable{
     }
 
     public double[][] getTargetData(){
-		return new double[][]{distancesToTarget, anglesToTarget};
+		return targetData;
 	}
 
 	@Override
 	public void run() {
-		if (lockTargetsPressed){
+		if (lockTargetsPressed && !fireButtonPressed){
 			lockTargets();
 		}else if (fireButtonPressed){
 			// write code to fire the shooter here
