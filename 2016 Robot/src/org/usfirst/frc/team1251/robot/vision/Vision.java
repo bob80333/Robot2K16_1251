@@ -77,13 +77,9 @@ public class Vision implements Runnable{
         this.fireButtonPressed = fireButtonPressed;
     }
 
-    public synchronized double[] getTargetAngles(){
-        return anglesToTarget;
-    }
-
-    public synchronized double[] getTargetDistances(){
-        return distancesToTarget;
-    }
+    public double[][] getTargetData(){
+		return new double[][]{distancesToTarget, anglesToTarget};
+	}
 
 	@Override
 	public void run() {

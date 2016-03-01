@@ -28,8 +28,9 @@ public class Robot extends IterativeRobot {
 	private boolean detect;
     private Vision vision;
 	private Thread visionThread;
-	private static double anglesToTarget[] = {};
-	private static double distancesToTarget[] = {};
+	private double[] anglesToTarget = {};
+	private double[] distancesToTarget = {};
+	private double[][] targetDataArrays = new double[2][];
 	
 	private final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
@@ -87,8 +88,9 @@ public class Robot extends IterativeRobot {
     	}else{
     		visionThread.run();
     	}
-        anglesToTarget  = vision.getTargetAngles();
-        distancesToTarget = vision.getTargetDistances();
+        targetDataArrays = vision.getTargetData();
+        distancesToTarget = targetDataArrays[0];
+        anglesToTarget = targetDataArrays[1];
 
     }
     
