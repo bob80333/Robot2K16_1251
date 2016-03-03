@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
@@ -31,6 +32,7 @@ public class Robot extends IterativeRobot {
 	private double[] anglesToTarget = {};
 	private double[] distancesToTarget = {};
 	private double[][] targetDataArrays = new double[2][];
+    private final double PI = Math.PI;
 	
 	private final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
@@ -69,11 +71,12 @@ public class Robot extends IterativeRobot {
     	
     	//PID decelerations
     	shooterSpeed.setDistancePerPulse(1.5);
-    	shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
-    	Pot.setPIDSourceType(PIDSourceType.kDisplacement);
-    	Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
-    	vision = new Vision();
-    	visionThread = new Thread(vision, "Vision-Tracking");
+		shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
+		Pot.setPIDSourceType(PIDSourceType.kDisplacement);
+		Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
+
+		vision = new Vision();
+		visionThread = new Thread(vision, "Vision-Tracking");
     }
 
     public void autonomousInit() {
@@ -89,8 +92,33 @@ public class Robot extends IterativeRobot {
     		visionThread.run();
     	}
         targetDataArrays = vision.getTargetData();
+        //unpack data into 2 single dimension arrays
         distancesToTarget = targetDataArrays[0];
         anglesToTarget = targetDataArrays[1];
+        //choose two lowest angles, and then choose the lower angled one b/c it will have less total  distance
+        double lowestAngleTarget = PI + 1; //init with impossible number
+        int lowestAngleTargetIndex = -1; // impossible
+        double secondLowestAngleTarget = PI + 1; //init with impossible number
+        int secondLowestAngleTargetIndex = -1; // yet again, impossible
+        for (int  i = 0; i < anglesToTarget.length; i++) {
+            if (Math.abs(normalizeAngle(anglesToTarget[i])) < Math.abs(lowestAngleTarget) ){
+                secondLowestAngleTarget = lowestAngleTarget;
+                secondLowestAngleTargetIndex = lowestAngleTargetIndex;
+                lowestAngleTarget = anglesToTarget[i];
+                lowestAngleTargetIndex = i;
+            }
+        }
+        
+        if (lowestAngleTargetIndex == -1){
+            // assume no targets found/processed
+        }else if (secondLowestAngleTargetIndex == -1){
+            // assume only 1 target found/processed
+            // proceed but use only the lowest target
+        }else{
+            // do targeting stuff here
+        }
+
+
 
     }
     
@@ -217,5 +245,15 @@ public class Robot extends IterativeRobot {
     
     public void disable() {
     	compressor.stop();
+    }
+
+    /**
+     * the angle is normalized from -π to +π
+     * @param angle the angle to be normalized in radians
+     * @return normalized angle
+     */
+    public double normalizeAngle(double angle){
+        // normalize angle to [-π, π]
+        return MathUtils.normalizeAngle(angle, 0.0);
     }
 }
