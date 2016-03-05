@@ -161,24 +161,18 @@ public class Robot extends IterativeRobot {
     	//Drive base movement
     	driveBase.tankDrive(lAxis * Math.abs(lRev), rAxis * Math.abs(rRev));
     	*/
-        // reset averages
-        averageJoystickLeft = 0;
-        averageJoystickRight = 0;
         // move values over 1 & add the values to the average
+        averageJoystickLeft -= joystickListLeft[0]/k_valuesToAverage;
+        averageJoystickRight -= joystickListRight[0]/k_valuesToAverage;
         for (int i = 0; i < k_valuesToAverage - 1; i++){
             joystickListLeft[i] = joystickListLeft[i+1];
             joystickListRight[i] = joystickListRight[i+1];
-            averageJoystickLeft += joystickListLeft [i];
-            averageJoystickRight += joystickListRight[i];
         }
         // add the new joystick input and add it to the average as well
         joystickListLeft[k_valuesToAverage-1] = -lAxis;
         joystickListRight[k_valuesToAverage-1] = -rAxis;
-        averageJoystickLeft += joystickListLeft [k_valuesToAverage-1];
-        averageJoystickRight += joystickListRight[k_valuesToAverage-1];
-        // average out all the added values
-        averageJoystickLeft = averageJoystickLeft / (double) k_valuesToAverage;
-        averageJoystickRight = averageJoystickRight / (double) k_valuesToAverage;
+        averageJoystickLeft += joystickListLeft [k_valuesToAverage-1]/k_valuesToAverage;
+        averageJoystickRight += joystickListRight[k_valuesToAverage-1]/k_valuesToAverage;
         // move the robot with those averages
         driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
     	//Collector arm up and down
