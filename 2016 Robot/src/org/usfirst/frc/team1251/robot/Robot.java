@@ -27,11 +27,14 @@ public class Robot extends IterativeRobot {
 	private String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
 	private double lRev=0, rRev=0, lAxis, rAxis;
 	private boolean detect;
+	private boolean testAuto = true;
     private Vision vision;
 	private Thread visionThread;
 	private double[] anglesToTarget = {};
 	private double[] distancesToTarget = {};
 	private double[][] targetDataArrays = new double[2][];
+    private double averageJoystickRight;
+    private double averageJoystickLeft;
     private final double PI = Math.PI;
 	
 	private final double /** Changeable constant values */
@@ -40,6 +43,9 @@ public class Robot extends IterativeRobot {
 			k_RPM2 = 2000,	//Mid 1 RPM speed
 			k_RPM3 = 3000, 	//Mid 2 RPM speed
 			k_RPM4 = 4000;	//High RPM speed
+    private final int k_valuesToAverage = 5; // number of values to average from the driver input
+    private double[] joystickListRight = new double[k_valuesToAverage];
+    private double[] joystickListLeft = new double[k_valuesToAverage];
 	
     public void robotInit() {    	
     	//Drive base using PWM 0, 1, 2, 3
@@ -84,42 +90,45 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousPeriodic() {
-    	//Runs the visionThread code
-    	if (visionThread.isAlive()){
-    		visionThread.notify();
-    		visionThread.run();
-    	}else{
-    		visionThread.run();
-    	}
-        targetDataArrays = vision.getTargetData();
-        //unpack data into 2 single dimension arrays
-        distancesToTarget = targetDataArrays[0];
-        anglesToTarget = targetDataArrays[1];
-        //choose two lowest angles, and then choose the lower angled one b/c it will have less total  distance
-        double lowestAngleTarget = PI + 1; //init with impossible number
-        int lowestAngleTargetIndex = -1; // impossible
-        double secondLowestAngleTarget = PI + 1; //init with impossible number
-        int secondLowestAngleTargetIndex = -1; // yet again, impossible
-        for (int  i = 0; i < anglesToTarget.length; i++) {
-            if (Math.abs(normalizeAngle(anglesToTarget[i])) < Math.abs(lowestAngleTarget) ){
-                secondLowestAngleTarget = lowestAngleTarget;
-                secondLowestAngleTargetIndex = lowestAngleTargetIndex;
-                lowestAngleTarget = anglesToTarget[i];
-                lowestAngleTargetIndex = i;
+        if (testAuto) {
+            //Runs the visionThread code
+            if (visionThread.isAlive()) {
+                visionThread.notify();
+                visionThread.run();
+            } else {
+                visionThread.run();
             }
-        }
-        
-        if (lowestAngleTargetIndex == -1){
-            // assume no targets found/processed
-        }else if (secondLowestAngleTargetIndex == -1){
-            // assume only 1 target found/processed
-            // proceed but use only the lowest target
+            targetDataArrays = vision.getTargetData();
+            //unpack data into 2 single dimension arrays
+            distancesToTarget = targetDataArrays[0];
+            anglesToTarget = targetDataArrays[1];
+            //choose two lowest angles, and then choose the lower angled one b/c it will have less total  distance
+            double lowestAngleTarget = PI + 1; //init with impossible number
+            int lowestAngleTargetIndex = -1; // impossible
+            double secondLowestAngleTarget = PI + 1; //init with impossible number
+            int secondLowestAngleTargetIndex = -1; // yet again, impossible
+            for (int i = 0; i < anglesToTarget.length; i++) {
+                if (Math.abs(normalizeAngle(anglesToTarget[i])) < Math.abs(lowestAngleTarget)) {
+                    secondLowestAngleTarget = lowestAngleTarget;
+                    secondLowestAngleTargetIndex = lowestAngleTargetIndex;
+                    lowestAngleTarget = anglesToTarget[i];
+                    lowestAngleTargetIndex = i;
+                }
+            }
+
+            if (lowestAngleTargetIndex == -1) {
+                // assume no targets found/processed
+            } else if (secondLowestAngleTargetIndex == -1) {
+                // assume only 1 target found/processed
+                // proceed but use only the lowest target
+            } else {
+                // do targeting stuff here
+            }
+
+
         }else{
-            // do targeting stuff here
+            driveBase.tankDrive(.70, .77);
         }
-
-
-
     }
     
     public void teleopInit() {
@@ -135,7 +144,7 @@ public class Robot extends IterativeRobot {
     	lAxis = driveController.getRawAxis(1);
     	rAxis = driveController.getRawAxis(3);
     	
-    	//Drive rev up
+    	/*//Drive rev up
     	if (lAxis > lRev) {
     		lRev += revSpeed;
     	}
@@ -151,7 +160,27 @@ public class Robot extends IterativeRobot {
     	
     	//Drive base movement
     	driveBase.tankDrive(lAxis * Math.abs(lRev), rAxis * Math.abs(rRev));
-    	
+    	*/
+        // reset averages
+        averageJoystickLeft = 0;
+        averageJoystickRight = 0;
+        // move values over 1 & add the values to the average
+        for (int i = 0; i < k_valuesToAverage - 1; i++){
+            joystickListLeft[i] = joystickListLeft[i+1];
+            joystickListRight[i] = joystickListRight[i+1];
+            averageJoystickLeft += joystickListLeft [i];
+            averageJoystickRight += joystickListRight[i];
+        }
+        // add the new joystick input and add it to the average as well
+        joystickListLeft[k_valuesToAverage-1] = -lAxis;
+        joystickListRight[k_valuesToAverage-1] = -rAxis;
+        averageJoystickLeft += joystickListLeft [k_valuesToAverage-1];
+        averageJoystickRight += joystickListRight[k_valuesToAverage-1];
+        // average out all the added values
+        averageJoystickLeft = averageJoystickLeft / (double) k_valuesToAverage;
+        averageJoystickRight = averageJoystickRight / (double) k_valuesToAverage;
+        // move the robot with those averages
+        driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
     	//Collector arm up and down
         if (driveController.getRawButton(3)) { //up
         	collectorArm.set(true);

@@ -14,5 +14,6 @@
     <orderEntry type="library" exported="" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop" level="project" />
     <orderEntry type="library" exported="" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:arm" level="project" />
     <orderEntry type="library" exported="" name="Gradle: edu.wpi.first.wpilibj:wpilibJavaFinal:0.1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="commons-math3-3.6" level="project" />
   </component>
 </module>
