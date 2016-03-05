@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.apache.commons.math3.util.MathUtils;
+//import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
@@ -36,6 +36,8 @@ public class Robot extends IterativeRobot {
     private double averageJoystickRight;
     private double averageJoystickLeft;
     private final double PI = Math.PI;
+    boolean isNegativeLeft = false;
+    boolean isNegativeRight = false;
 	
 	private final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
@@ -107,7 +109,7 @@ public class Robot extends IterativeRobot {
             int lowestAngleTargetIndex = -1; // impossible
             double secondLowestAngleTarget = PI + 1; //init with impossible number
             int secondLowestAngleTargetIndex = -1; // yet again, impossible
-            for (int i = 0; i < anglesToTarget.length; i++) {
+            /*for (int i = 0; i < anglesToTarget.length; i++) {
                 if (Math.abs(normalizeAngle(anglesToTarget[i])) < Math.abs(lowestAngleTarget)) {
                     secondLowestAngleTarget = lowestAngleTarget;
                     secondLowestAngleTargetIndex = lowestAngleTargetIndex;
@@ -125,7 +127,7 @@ public class Robot extends IterativeRobot {
                 // do targeting stuff here
             }
 
-
+*/
         }else{
             driveBase.tankDrive(.70, .77);
         }
@@ -162,6 +164,8 @@ public class Robot extends IterativeRobot {
     	driveBase.tankDrive(lAxis * Math.abs(lRev), rAxis * Math.abs(rRev));
     	*/
         // move values over 1 & add the values to the average
+    	
+    	
         averageJoystickLeft -= joystickListLeft[0]/k_valuesToAverage;
         averageJoystickRight -= joystickListRight[0]/k_valuesToAverage;
         for (int i = 0; i < k_valuesToAverage - 1; i++){
@@ -171,9 +175,29 @@ public class Robot extends IterativeRobot {
         // add the new joystick input and add it to the average as well
         joystickListLeft[k_valuesToAverage-1] = -lAxis;
         joystickListRight[k_valuesToAverage-1] = -rAxis;
-        averageJoystickLeft += joystickListLeft [k_valuesToAverage-1]/k_valuesToAverage;
-        averageJoystickRight += joystickListRight[k_valuesToAverage-1]/k_valuesToAverage;
+        //averageJoystickLeft += joystickListLeft [k_valuesToAverage-1]/k_valuesToAverage;
+        //averageJoystickRight += joystickListRight[k_valuesToAverage-1]/k_valuesToAverage;
         // move the robot with those averages
+        //averageJoystickLeft = -lAxis;
+        //averageJoystickRight = -rAxis;
+        if (averageJoystickLeft < 0){
+        	averageJoystickLeft -= Math.pow(-lAxis, 2.0)/k_valuesToAverage;
+        	
+        }else if (averageJoystickLeft >= 0){
+        	averageJoystickLeft += Math.pow(-lAxis, 2.0)/k_valuesToAverage;
+        }
+        
+        if (averageJoystickRight < 0){
+        	averageJoystickRight -= Math.pow(-rAxis, 2.0)/k_valuesToAverage;
+        	
+        }else if (averageJoystickRight >= 0){
+        	averageJoystickRight += Math.pow(-rAxis, 2.0)/k_valuesToAverage;
+        }
+        if (averageJoystickRight > 0.5 && averageJoystickLeft < -0.5){
+        	averageJoystickRight *= 0.7;
+        	averageJoystickLeft *= 0.7;
+        }
+        
         driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
     	//Collector arm up and down
         if (driveController.getRawButton(3)) { //up
@@ -275,8 +299,8 @@ public class Robot extends IterativeRobot {
      * @param angle the angle to be normalized in radians
      * @return normalized angle
      */
-    public double normalizeAngle(double angle){
+  // public double normalizeAngle(double angle){
         // normalize angle to [-π, π]
-        return MathUtils.normalizeAngle(angle, 0.0);
-    }
+       // return MathUtils.normalizeAngle(angle, 0.0);
+    //}
 }
