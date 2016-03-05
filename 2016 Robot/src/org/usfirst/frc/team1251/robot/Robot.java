@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-
-
-
-//import org.apache.commons.math3.util.MathUtils;
+import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
@@ -24,40 +21,43 @@ import org.usfirst.frc.team1251.robot.vision.Vision;
 
 public class Robot extends IterativeRobot {
 
-	private RobotDrive driveBase;
-	private Joystick driveController, operatorController;
-	private Victor mCollector, mShooter;
-	private Compressor compressor;
-	private Solenoid collectorArm, shooterHood;
-	private DigitalInput ballDetect;
-	private Encoder shooterSpeed;
-	private AnalogPotentiometer Pot;
-	private PIDController Pid;
-	private String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
-	private double lRev=0, rRev=0, lAxis, rAxis;
-	private boolean detect;
-	private boolean testAuto = true;
-    private Vision vision;
-	private Thread visionThread;
-	private double[] anglesToTarget = {};
-	private double[] distancesToTarget = {};
-	private double[][] targetDataArrays = new double[2][];
-    private double averageJoystickRight;
-    private double averageJoystickLeft;
-    private final double PI = Math.PI;
-    boolean isNegativeLeft = false;
-    boolean isNegativeRight = false;
-	
-	private final double /** Changeable constant values */
+	public static RobotDrive driveBase;
+	public static Joystick driveController, operatorController;
+	public static Victor mCollector, mShooter;
+	public static Compressor compressor;
+	public static Solenoid collectorArm, shooterHood;
+	public static DigitalInput ballDetect;
+	public static Encoder shooterSpeed;
+	public static AnalogPotentiometer Pot;
+	public static PIDController Pid;
+	public static String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
+	public static double lRev=0, rRev=0, lAxis, rAxis;
+	public static boolean detect;
+	public static boolean testAuto = true;
+    public static Vision vision;
+	public static Thread visionThread;
+	public static double[] anglesToTarget = {};
+	public static double[] distancesToTarget = {};
+	public static double[][] targetDataArrays = new double[2][];
+    public static double averageJoystickRight;
+    public static double averageJoystickLeft;
+    public static final double PI = Math.PI;
+    public static boolean isNegativeLeft = false;
+    public static boolean isNegativeRight = false;
+	public static int autoLoopCounter;
+    public static AnalogGyro vGyro;
+    public static ADXRS450_Gyro hGyro;
+	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
 			k_RPM1 = 1000, 	//Low RPM speed
 			k_RPM2 = 2000,	//Mid 1 RPM speed
 			k_RPM3 = 3000, 	//Mid 2 RPM speed
 			k_RPM4 = 4000;	//High RPM speed
-    private final int k_valuesToAverage = 5; // number of values to average from the driver input
-    private double[] joystickListRight = new double[k_valuesToAverage];
-    private double[] joystickListLeft = new double[k_valuesToAverage];
+    public static final int k_valuesToAverage = 5; // number of values to average from the driver input
+    public static double[] joystickListRight = new double[k_valuesToAverage];
+    public static double[] joystickListLeft = new double[k_valuesToAverage];
     int location = -1;
+    int defense = -1;
 	
     public void robotInit() {    	
     	//Drive base using PWM 0, 1, 2, 3
@@ -93,7 +93,20 @@ public class Robot extends IterativeRobot {
 		Pot.setPIDSourceType(PIDSourceType.kDisplacement);
 		Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
 		try{
-		location =  Integer.parseInt(new Scanner(new File("/media/sda1/robot.conf")).nextLine().replaceAll("location=", ""));
+            Scanner scan = new Scanner(new File("/media/sda1/robot.conf"));
+            String data = scan.nextLine();
+            if (data.contains("location=")){
+                location = Integer.parseInt(data.replaceAll("location=", ""));
+            }else if(data.contains("defense=")){
+                defense = Integer.parseInt(data.replaceAll("defense=", ""));
+            }
+            scan = new Scanner(new File("/media/sda2/robot.conf"));
+            data = scan.nextLine();
+            if (data.contains("location=")){
+                location = Integer.parseInt(data.replaceAll("location=", ""));
+            }else if(data.contains("defense=")){
+                defense = Integer.parseInt(data.replaceAll("defense=", ""));
+            }
 		}catch (Exception e){
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -103,15 +116,26 @@ public class Robot extends IterativeRobot {
 		
 		vision = new Vision();
 		visionThread = new Thread(vision, "Vision-Tracking");
+
+        vGyro = new AnalogGyro(0);
+        hGyro= new ADXRS450_Gyro();
+        vGyro.calibrate();
+        hGyro.calibrate();
     }
 
     public void autonomousInit() {
     	visionThread.run();
-    	
+    	autoLoopCounter = 1;
     }
     
     public void autonomousPeriodic() {
-    	
+    	autoLoopCounter++;
+        if (Autonomous.goneDownDefense){
+            Autonomous.loopsSinceCrossed++;
+        }
+        if (!Autonomous.crossed){
+            Autonomous.crossDefenses(defense);
+        }
         if (testAuto) {
             //Runs the visionThread code
             if (visionThread.isAlive()) {
@@ -130,7 +154,7 @@ public class Robot extends IterativeRobot {
             int lowestAngleTargetIndex = -1; // impossible
             double secondLowestAngleTarget = PI + 1; //init with impossible number
             int secondLowestAngleTargetIndex = -1; // yet again, impossible
-            /*for (int i = 0; i < anglesToTarget.length; i++) {
+            for (int i = 0; i < anglesToTarget.length; i++) {
                 if (Math.abs(normalizeAngle(anglesToTarget[i])) < Math.abs(lowestAngleTarget)) {
                     secondLowestAngleTarget = lowestAngleTarget;
                     secondLowestAngleTargetIndex = lowestAngleTargetIndex;
@@ -148,7 +172,7 @@ public class Robot extends IterativeRobot {
                 // do targeting stuff here
             }
 
-*/
+
         }else{
             driveBase.tankDrive(.70, .77);
         }
@@ -166,24 +190,7 @@ public class Robot extends IterativeRobot {
     	//Declaring variables to driver axis
     	lAxis = driveController.getRawAxis(1);
     	rAxis = driveController.getRawAxis(3);
-    	
-    	/*//Drive rev up
-    	if (lAxis > lRev) {
-    		lRev += revSpeed;
-    	}
-    	else {
-    		lRev -= revSpeed;
-    	}
-    	if (rAxis > rRev) {
-    		rRev += revSpeed;
-    	}
-    	else {
-    		rRev -= revSpeed;
-    	}
-    	
-    	//Drive base movement
-    	driveBase.tankDrive(lAxis * Math.abs(lRev), rAxis * Math.abs(rRev));
-    	*/
+
         // move values over 1 & add the values to the average
     	
     	
@@ -196,11 +203,6 @@ public class Robot extends IterativeRobot {
         // add the new joystick input and add it to the average as well
         joystickListLeft[k_valuesToAverage-1] = -lAxis;
         joystickListRight[k_valuesToAverage-1] = -rAxis;
-        //averageJoystickLeft += joystickListLeft [k_valuesToAverage-1]/k_valuesToAverage;
-        //averageJoystickRight += joystickListRight[k_valuesToAverage-1]/k_valuesToAverage;
-        // move the robot with those averages
-        //averageJoystickLeft = -lAxis;
-        //averageJoystickRight = -rAxis;
         if (averageJoystickLeft < 0){
         	averageJoystickLeft -= Math.pow(-lAxis, 2.0)/k_valuesToAverage;
         	
@@ -218,7 +220,7 @@ public class Robot extends IterativeRobot {
         	averageJoystickRight *= 0.7;
         	averageJoystickLeft *= 0.7;
         }
-        
+
         driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
     	//Collector arm up and down
         if (driveController.getRawButton(3)) { //up
@@ -321,8 +323,8 @@ public class Robot extends IterativeRobot {
      * @param angle the angle to be normalized in radians
      * @return normalized angle
      */
-  // public double normalizeAngle(double angle){
+   public double normalizeAngle(double angle){
         // normalize angle to [-π, π]
-       // return MathUtils.normalizeAngle(angle, 0.0);
-    //}
+        return MathUtils.normalizeAngle(angle, 0.0);
+    }
 }
