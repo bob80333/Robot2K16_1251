@@ -1,8 +1,17 @@
 package org.usfirst.frc.team1251.robot;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Scanner;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
+
+
 
 //import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.vision.Vision;
@@ -48,6 +57,7 @@ public class Robot extends IterativeRobot {
     private final int k_valuesToAverage = 5; // number of values to average from the driver input
     private double[] joystickListRight = new double[k_valuesToAverage];
     private double[] joystickListLeft = new double[k_valuesToAverage];
+    int location = -1;
 	
     public void robotInit() {    	
     	//Drive base using PWM 0, 1, 2, 3
@@ -82,16 +92,26 @@ public class Robot extends IterativeRobot {
 		shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
 		Pot.setPIDSourceType(PIDSourceType.kDisplacement);
 		Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
-
+		try{
+		location =  Integer.parseInt(new Scanner(new File("/media/sda1/robot.conf")).nextLine().replaceAll("location=", ""));
+		}catch (Exception e){
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			SmartDashboard.putString("error", sw.toString());
+		}
+		
 		vision = new Vision();
 		visionThread = new Thread(vision, "Vision-Tracking");
     }
 
     public void autonomousInit() {
     	visionThread.run();
+    	
     }
     
     public void autonomousPeriodic() {
+    	
         if (testAuto) {
             //Runs the visionThread code
             if (visionThread.isAlive()) {
@@ -101,6 +121,7 @@ public class Robot extends IterativeRobot {
                 visionThread.run();
             }
             targetDataArrays = vision.getTargetData();
+            
             //unpack data into 2 single dimension arrays
             distancesToTarget = targetDataArrays[0];
             anglesToTarget = targetDataArrays[1];
@@ -288,6 +309,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putString("Arm position ", armPosition);
         SmartDashboard.putString("Hood Position ", hoodPosition);
         SmartDashboard.putString("Shooter setting ", shooterSpeedDisplayed);
+        SmartDashboard.putNumber("Location", location);
     }   
     
     public void disable() {
