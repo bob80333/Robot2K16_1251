@@ -43,3 +43,5 @@ Vision-Testing/build.properties
 PID-Testing/Robot PID testing/sysProps.xml
 build/
 *.properties
+Robot2K16_1251.ipr
+Robot2K16_1251.iws
