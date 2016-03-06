@@ -216,6 +216,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.0.0-SNAPSHOT/ad998392a9dc38afac291173e5d861fed3f693dd/NetworkTables-3.0.0-SNAPSHOT-arm.jar!/" />
         <root url="jar://$USER_HOME$/wpilib/java/current/lib/WPILib.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/java/current/ant/ant-classloadertask.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/java/current/ant/ant-contrib.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/java/current/ant/jsch-0.1.50.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -226,6 +229,7 @@
     <library name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.0.0-SNAPSHOT/b2e92e4a56d7f55f3e50ab5f15b3b896ec818bb4/NetworkTables-3.0.0-SNAPSHOT-desktop.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/java/current/lib/NetworkTables.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>

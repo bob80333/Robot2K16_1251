@@ -54,7 +54,8 @@ public class Robot extends IterativeRobot {
 			k_RPM1 = 1000, 	//Low RPM speed
 			k_RPM2 = 2000,	//Mid 1 RPM speed
 			k_RPM3 = 3000, 	//Mid 2 RPM speed
-			k_RPM4 = 4000;	//High RPM speed
+			k_RPM4 = 4000,	//High RPM speed
+            k_TOLERANCE = 0.05;
     public static final int k_valuesToAverage = 5; // number of values to average from the driver input
     public static double[] joystickListRight = new double[k_valuesToAverage];
     public static double[] joystickListLeft = new double[k_valuesToAverage];
@@ -233,10 +234,15 @@ public class Robot extends IterativeRobot {
         	hoodPosition = "Up";
         }
         else if (operatorController.getPOV() == 180) {
-        	shooterHood.set(false);
-        	hoodPosition = "Down";
+            shooterHood.set(false);
+            hoodPosition = "Down";
         }
-        
+
+        //Shooter method
+        public static void setShooter(double speed) {
+            Pid.setSetpoint(speed);
+        }
+
         //Shooter multi-RPM
         if (operatorController.getRawButton(5)) { //Low
         	Pid.setSetpoint(((k_RPM1/60)*360)*1.5);
