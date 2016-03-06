@@ -20,12 +20,18 @@ public class Vision implements Runnable{
 										{35000.0, 31000.0, 15470.0, 15300.0, 9040.0, 8880.0, 4140.0, 3980.0, 2170.0, 2060.0, 1540.0, 1470.0, 1110.0, 1040.0, 740.0, 680.0, 580.0, 530.0, 430.0, 390.0}};
 	private boolean lockTargetsPressed;
 	private boolean fireButtonPressed;
+    public static boolean foundData = false;
 	
 	public void lockTargets(){
+        foundData = false;
 		updateDataFromNetwork();
-		findDistanceToCamera();
-		findAngleToCamera();
-        targetData = new double[][]{distancesToTarget, anglesToTarget};
+        afterData:
+            if(contours.size() == 0 || contours.equals(null)){
+                break afterData;
+            }
+		    findDistanceToCamera();
+		    findAngleToCamera();
+            foundData = true;
 	}
 	
 	/**
@@ -82,6 +88,7 @@ public class Vision implements Runnable{
     public double[][] getTargetData(){
 		return targetData;
 	}
+
 
 	@Override
 	public void run() {

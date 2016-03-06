@@ -48,6 +48,7 @@ public class Robot extends IterativeRobot {
 	public static int autoLoopCounter;
     public static AnalogGyro vGyro;
     public static ADXRS450_Gyro hGyro;
+    public static boolean isVisionTargeting = false;
 	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
 			k_RPM1 = 1000, 	//Low RPM speed
@@ -164,27 +165,7 @@ public class Robot extends IterativeRobot {
             distancesToTarget = targetDataArrays[0];
             anglesToTarget = targetDataArrays[1];
             //choose two lowest angles, and then choose the lower angled one b/c it will have less total  distance
-            double lowestAngleTarget = PI + 1; //init with impossible number
-            int lowestAngleTargetIndex = -1; // impossible
-            double secondLowestAngleTarget = PI + 1; //init with impossible number
-            int secondLowestAngleTargetIndex = -1; // yet again, impossible
-            for (int i = 0; i < anglesToTarget.length; i++) {
-                if (Math.abs(normalizeAngle(anglesToTarget[i])) < Math.abs(lowestAngleTarget)) {
-                    secondLowestAngleTarget = lowestAngleTarget;
-                    secondLowestAngleTargetIndex = lowestAngleTargetIndex;
-                    lowestAngleTarget = anglesToTarget[i];
-                    lowestAngleTargetIndex = i;
-                }
-            }
 
-            if (lowestAngleTargetIndex == -1) {
-                // assume no targets found/processed
-            } else if (secondLowestAngleTargetIndex == -1) {
-                // assume only 1 target found/processed
-                // proceed but use only the lowest target
-            } else {
-                // do targeting stuff here
-            }
 
 
         }else{
@@ -337,7 +318,7 @@ public class Robot extends IterativeRobot {
      * @param angle the angle to be normalized in radians
      * @return normalized angle
      */
-   public double normalizeAngle(double angle){
+   public static double normalizeAngle(double angle){
         // normalize angle to [-π, π]
         return MathUtils.normalizeAngle(angle, 0.0);
     }
