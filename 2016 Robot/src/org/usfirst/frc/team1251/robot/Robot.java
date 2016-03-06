@@ -1,6 +1,7 @@
 package org.usfirst.frc.team1251.robot;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Scanner;
@@ -92,29 +93,42 @@ public class Robot extends IterativeRobot {
 		shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
 		Pot.setPIDSourceType(PIDSourceType.kDisplacement);
 		Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
-		try{
-            Scanner scan = new Scanner(new File("/media/sda1/robot.conf"));
-            String data = scan.nextLine();
-            if (data.contains("location=")){
-                location = Integer.parseInt(data.replaceAll("location=", ""));
-            }else if(data.contains("defense=")){
-                defense = Integer.parseInt(data.replaceAll("defense=", ""));
-            }
-            scan = new Scanner(new File("/media/sda2/robot.conf"));
+
+        Scanner scan = null;
+        try {
+            // read in usb 1
+            scan = new Scanner(new File("/media/sda1/robot.conf"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String data = null;
+        if (scan != null) {
             data = scan.nextLine();
+            // check for location or defense
             if (data.contains("location=")){
                 location = Integer.parseInt(data.replaceAll("location=", ""));
             }else if(data.contains("defense=")){
                 defense = Integer.parseInt(data.replaceAll("defense=", ""));
             }
-		}catch (Exception e){
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			SmartDashboard.putString("error", sw.toString());
-		}
-		
-		vision = new Vision();
+        }
+        try {
+            // read in usb 2
+            scan = new Scanner(new File("/media/sda2/robot.conf"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (scan != null) {
+            data = scan.nextLine();
+            // check for location or defense
+            if (data.contains("location=")){
+                location = Integer.parseInt(data.replaceAll("location=", ""));
+            }else if(data.contains("defense=")){
+                defense = Integer.parseInt(data.replaceAll("defense=", ""));
+            }
+        }
+
+
+        vision = new Vision();
 		visionThread = new Thread(vision, "Vision-Tracking");
 
         vGyro = new AnalogGyro(0);

@@ -41,4 +41,5 @@ gradlew.bat
 Vision-Testing/build.xml
 Vision-Testing/build.properties
 PID-Testing/Robot PID testing/sysProps.xml
+build/
 *.properties
