@@ -7,6 +7,8 @@ public class Contour {
 	private double width;
 	private double height;
 	private double solidity;
+	private double angle;
+	private double distance;
 	
 	public Contour (double area, double centerX, double centerY, double width, double height, double solidity){
 		this.area = area;
@@ -35,5 +37,25 @@ public class Contour {
 
 	public double getWidth() {
 		return width;
+	}
+
+	public double getSolidity() {
+		return solidity;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 }
