@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1251.robot;
 import org.usfirst.frc.team1251.robot.Robot;
+import org.usfirst.frc.team1251.robot.vision.Contour;
+
 /**
  * Created by Eric on 3/5/2016.
  */
@@ -12,6 +14,8 @@ public class Autonomous {
     public static final double crossingAngle = 10.0;
     public static boolean crossed = false;
     public static boolean targetLockedSuccessfully = false;
+    public static final double angleMargin = 0.5;
+    public static final double k_turnPercentage = 0.002;
     public static void crossDefenses(int defense){
         switch (defense) {
             case -1:
@@ -102,9 +106,15 @@ public class Autonomous {
         }
     }
 
-    public static void adjustRobotAngle(){
+    public static void adjustRobotAngle(Contour target){
         if (!targetLockedSuccessfully){
-
+            if ((Robot.hGyro.getAngle() > Robot.hGyro.getAngle() + target.getAngle() + angleMargin)
+                    || (Robot.hGyro.getAngle() < Robot.hGyro.getAngle() + target.getAngle() - angleMargin)){
+                Robot.driveBase.tankDrive((-Robot.hGyro.getAngle() + target.getAngle()) * k_turnPercentage,
+                        (Robot.hGyro.getAngle() + target.getAngle()) * k_turnPercentage);
+            }else{
+                targetLockedSuccessfully = true;
+            }
         }
     }
 }
