@@ -215,10 +215,12 @@
     <library name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:arm">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.0.0-SNAPSHOT/ad998392a9dc38afac291173e5d861fed3f693dd/NetworkTables-3.0.0-SNAPSHOT-arm.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/java/current/lib/WPILib.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.0.0-SNAPSHOT/ddf868d6a9e6d055ba8e51e1d8879819bb9a0201/NetworkTables-3.0.0-SNAPSHOT-sources.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/java/current/lib/WPILib-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop">
