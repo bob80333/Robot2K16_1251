@@ -5,7 +5,7 @@ import org.usfirst.frc.team1251.robot.vision.Contour;
 /**
  * Created by Eric on 3/5/2016.
  */
-public class Autonomous {
+public class AutonomousUtilities {
     public static boolean goneUpDefense = false;
     public static boolean goingUpDefense = false;
     public static boolean goneDownDefense = false;

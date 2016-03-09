@@ -158,11 +158,11 @@ public class Robot extends IterativeRobot {
         eventManager.add(AutoPeriodicListener.class, autoPeriodicListener);
         eventManager.fireEvent(AutoPeriodicEvent.class);
         autoLoopCounter++;
-        if (Autonomous.goneDownDefense) {
-            Autonomous.loopsSinceCrossed++;
+        if (AutonomousUtilities.goneDownDefense) {
+            AutonomousUtilities.loopsSinceCrossed++;
         }
-        if (!Autonomous.crossed) {
-            Autonomous.crossDefenses(defense);
+        if (!AutonomousUtilities.crossed) {
+            AutonomousUtilities.crossDefenses(defense);
         }
         if (testAuto) {
             //Runs the visionThread code
