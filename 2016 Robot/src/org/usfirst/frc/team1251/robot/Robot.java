@@ -122,7 +122,7 @@ public class Robot extends IterativeRobot {
         }
         try {
             // read in usb 2
-            scan = new Scanner(new File("/media/sda2/robot.conf"));
+            scan = new Scanner(new File("/media/sdb1/robot.conf"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

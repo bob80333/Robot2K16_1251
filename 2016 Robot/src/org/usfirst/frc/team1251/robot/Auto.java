@@ -17,7 +17,7 @@ public class Auto implements AutoInitListener, AutoPeriodicListener{
     @Override
     public void onAutoPeriodic() {
         // check every 20 loops for new image data
-        if (autoLoopCounter%20 > 0 && Robot.testAuto){
+        if (autoLoopCounter%20 == 0 && Robot.testAuto){
             Robot.contours = Robot.vision.getContours();
         }
 

@@ -17,6 +17,11 @@ public class Teleop implements TeleopInitListener, TeleopPeriodicListener {
 
     @Override
     public void onTeleopInit() {
+
+    }
+
+    @Override
+    public void onTeleopPeriodic() {
         //Declaring variable to detector button
         Robot.detect = Robot.ballDetect.get();
 
@@ -38,17 +43,17 @@ public class Teleop implements TeleopInitListener, TeleopPeriodicListener {
         // add the new joystick input and add it to the average as well
         joystickListLeft[Robot.k_valuesToAverage - 1] = -lAxis;
         joystickListRight[Robot.k_valuesToAverage - 1] = -rAxis;
-        if (averageJoystickLeft < 0) {
+        if (lAxis < 0) {
             averageJoystickLeft -= Math.pow(lAxis, 2.0);
 
-        } else if (averageJoystickLeft >= 0) {
+        } else if (lAxis >= 0) {
             averageJoystickLeft += Math.pow(lAxis, 2.0);
         }
 
-        if (averageJoystickRight < 0) {
+        if (rAxis < 0) {
             averageJoystickRight -= Math.pow(rAxis, 2.0);
 
-        } else if (averageJoystickRight >= 0) {
+        } else if (rAxis >= 0) {
             averageJoystickRight += Math.pow(rAxis, 2.0);
         }
         if (averageJoystickRight > 0.5 && averageJoystickLeft < -0.5) {
@@ -141,10 +146,5 @@ public class Teleop implements TeleopInitListener, TeleopPeriodicListener {
         SmartDashboard.putString("Hood Position ", Robot.hoodPosition);
         SmartDashboard.putString("Shooter setting ", Robot.shooterSpeedDisplayed);
         SmartDashboard.putNumber("Location", Robot.location);
-    }
-
-    @Override
-    public void onTeleopPeriodic() {
-
     }
 }
