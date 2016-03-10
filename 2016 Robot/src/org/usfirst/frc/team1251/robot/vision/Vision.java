@@ -58,6 +58,7 @@ public class Vision implements Runnable{
 						&& contours.get(i).getArea() < distanceTable[1][previousJ]){
 					yIntercept = -(distanceTable[1][j] - distanceTable[1][previousJ] * distanceTable[1][j]) + distanceTable[0][previousJ];
 					distancesToTarget[i] = 1/(distanceTable[1][j] - distanceTable[1][previousJ]) * (contours.get(i).getArea() - yIntercept);
+					contours.get(i).setDistance(distancesToTarget[i]);
 					previousJ++;
 				}
 			}
@@ -69,6 +70,7 @@ public class Vision implements Runnable{
 		for(int i = 0; i < contours.size(); i++){
 			targetCenterX = contours.get(i).getCenterX();
 			anglesToTarget[i] = Math.tan((targetCenterX - cameraCenterX)/(distancesToTarget[i]));
+			contours.get(i).setAngle(anglesToTarget[i]);
 		}
 	}
 	
@@ -85,9 +87,9 @@ public class Vision implements Runnable{
         this.fireButtonPressed = fireButtonPressed;
     }
 
-    public double[][] getTargetData(){
-		return targetData;
-	}
+    public synchronized List<Contour> getContours(){
+        return contours;
+    }
 
 
 	@Override

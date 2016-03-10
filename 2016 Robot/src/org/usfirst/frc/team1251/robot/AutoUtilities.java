@@ -5,7 +5,7 @@ import org.usfirst.frc.team1251.robot.vision.Contour;
 /**
  * Created by Eric on 3/5/2016.
  */
-public class AutonomousUtilities {
+public class AutoUtilities {
     public static boolean goneUpDefense = false;
     public static boolean goingUpDefense = false;
     public static boolean goneDownDefense = false;
@@ -60,27 +60,17 @@ public class AutonomousUtilities {
             case -1:
                 // no location given, try to find the target
                 double lowestAngleTarget = Robot.PI + 1; //init with impossible number
-                int lowestAngleTargetIndex = -1; // impossible
                 double secondLowestAngleTarget = Robot.PI + 1; //init with impossible number
-                int secondLowestAngleTargetIndex = -1; // impossible
                 // find lowest angle difference target
-                for (int i = 0; i < Robot.anglesToTarget.length; i++) {
-                    if (Math.abs(Robot.normalizeAngle(Robot.anglesToTarget[i])) < Math.abs(lowestAngleTarget)) {
+                for (Contour contour : Robot.contours) {
+                    if (Math.abs(Robot.normalizeAngle(contour.getAngle())) < Math.abs(contour.getAngle())){
                         secondLowestAngleTarget = lowestAngleTarget;
-                        secondLowestAngleTargetIndex = lowestAngleTargetIndex;
-                        lowestAngleTarget = Robot.anglesToTarget[i];
-                        lowestAngleTargetIndex = i;
+                        lowestAngleTarget = contour.getAngle();
                     }
                 }
 
-                if (lowestAngleTargetIndex == -1) {
-                    // assume no targets found/processed
-                } else if (secondLowestAngleTargetIndex == -1) {
-                    // assume only 1 target found/processed
-                    // proceed but use only the lowest target
-                } else {
+
                     // do targeting stuff here
-                }
             case 0:
                 // we are the spybot
 

@@ -2,6 +2,7 @@ package org.usfirst.frc.team1251.robot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.*;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.events.*;
 import org.usfirst.frc.team1251.robot.events.listeners.*;
+import org.usfirst.frc.team1251.robot.vision.Contour;
 import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
@@ -35,14 +37,11 @@ public class Robot extends IterativeRobot {
     public static boolean testAuto = true;
     public static Vision vision;
     public static Thread visionThread;
-    public static double[] anglesToTarget = {};
-    public static double[] distancesToTarget = {};
-    public static double[][] targetDataArrays = new double[2][];
     public static final double PI = Math.PI;
-    public static int autoLoopCounter;
     public static AnalogGyro vGyro;
     public static ADXRS450_Gyro hGyro;
     public static boolean isVisionTargeting = false;
+    public static List<Contour> contours;
     public static final double /** Changeable constant values */
             revSpeed = 0.5,    //Drive rev speed
             k_RPM1 = 1000,    //Low RPM speed
@@ -150,39 +149,13 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         eventManager.add(AutoInitListener.class, autoInitListener);
         eventManager.fireEvent(AutoInitEvent.class);
-        visionThread.run();
-        autoLoopCounter = 1;
+
     }
 
     public void autonomousPeriodic() {
         eventManager.add(AutoPeriodicListener.class, autoPeriodicListener);
         eventManager.fireEvent(AutoPeriodicEvent.class);
-        autoLoopCounter++;
-        if (AutonomousUtilities.goneDownDefense) {
-            AutonomousUtilities.loopsSinceCrossed++;
-        }
-        if (!AutonomousUtilities.crossed) {
-            AutonomousUtilities.crossDefenses(defense);
-        }
-        if (testAuto) {
-            //Runs the visionThread code
-            if (visionThread.isAlive()) {
-                visionThread.notify();
-                visionThread.run();
-            } else {
-                visionThread.run();
-            }
-            targetDataArrays = vision.getTargetData();
 
-            //unpack data into 2 single dimension arrays
-            distancesToTarget = targetDataArrays[0];
-            anglesToTarget = targetDataArrays[1];
-            //choose two lowest angles, and then choose the lower angled one b/c it will have less total  distance
-
-
-        } else {
-            driveBase.tankDrive(.70, .77);
-        }
     }
 
     public void teleopInit() {
