@@ -351,8 +351,6 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledPeriodic(){
-    	driveController.setRumble(RumbleType.kLeftRumble, 100);
-    	driveController.setRumble(RumbleType.kRightRumble, 100);
     }
 
     /**
