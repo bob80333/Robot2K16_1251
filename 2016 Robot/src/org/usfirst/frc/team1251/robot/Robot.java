@@ -2,20 +2,19 @@ package org.usfirst.frc.team1251.robot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
 import java.util.List;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-import org.apache.commons.math3.util.MathUtils;
 
+import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.vision.Contour;
 
 
@@ -210,7 +209,7 @@ public class Robot extends IterativeRobot {
     	rAxis = driveController.getRawAxis(3);
 
         // move values over 1 & add the values to the average
-    	
+ 
     	
         averageJoystickLeft = 0;
         averageJoystickRight = 0;
@@ -246,11 +245,11 @@ public class Robot extends IterativeRobot {
 
         driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
     	//Collector arm up and down
-        if (driveController.getRawButton(3)) { //up
+        if (driveController.getRawButton(2)) { //up
         	collectorArm.set(true);
         	armPosition = "Up";
         }
-        if (driveController.getRawButton(2)) { //down
+        if (driveController.getRawButton(1)) { //down
         	collectorArm.set(false);
         	armPosition = "Down";
         }
@@ -347,8 +346,13 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Location", location);
     }   
     
-    public void disable() {
+    public void disabledInit() {
     	compressor.stop();
+    }
+    
+    public void disabledPeriodic(){
+    	driveController.setRumble(RumbleType.kLeftRumble, 100);
+    	driveController.setRumble(RumbleType.kRightRumble, 100);
     }
 
     /**
