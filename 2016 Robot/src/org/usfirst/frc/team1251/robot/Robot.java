@@ -38,20 +38,13 @@ public class Robot extends IterativeRobot {
 	public static AnalogPotentiometer Pot;
 	public static PIDController Pid;
 	public static String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
-	public static double lRev=0, rRev=0, lAxis, rAxis;
-	public static boolean detect;
 	public static boolean testAuto = true;
     public static Vision vision;
-    public static boolean isShooting = false;
 	public static Thread visionThread;
 	public static double[] anglesToTarget = {};
 	public static double[] distancesToTarget = {};
 	public static double[][] targetDataArrays = new double[2][];
-    public static double averageJoystickRight;
-    public static double averageJoystickLeft;
     public static final double PI = Math.PI;
-    public static boolean isNegativeLeft = false;
-    public static boolean isNegativeRight = false;
 	public static int autoLoopCounter;
     public static AnalogGyro vGyro;
     public static ADXRS450_Gyro hGyro;
@@ -65,10 +58,8 @@ public class Robot extends IterativeRobot {
 
             k_TOLERANCE = 0.05;
     public static final int k_valuesToAverage = 5; // number of values to average from the driver input
-    public static double[] joystickListRight = new double[k_valuesToAverage];
-    public static double[] joystickListLeft = new double[k_valuesToAverage];
-    int location = -1;
-    int defense = -1;
+    public static int location = -1;
+    public static int defense = -1;
 	
     public void robotInit() {    	
     	//Drive base using PWM 0, 1, 2, 3
@@ -201,149 +192,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-    	//Declaring variable to detector button
-    	detect = ballDetect.get();
-    	
-    	//Declaring variables to driver axis
-    	lAxis = driveController.getRawAxis(1);
-    	rAxis = driveController.getRawAxis(3);
-
-        // move values over 1 & add the values to the average
- 
-    	
-        averageJoystickLeft = 0;
-        averageJoystickRight = 0;
-        for (int i = 0; i < k_valuesToAverage - 1; i++){
-            joystickListLeft[i] = joystickListLeft[i+1];
-            joystickListRight[i] = joystickListRight[i+1];
-            averageJoystickLeft += joystickListLeft[i];
-            averageJoystickRight += joystickListRight[i];
-        }
-        // add the new joystick input and add it to the average as well
-        joystickListLeft[k_valuesToAverage-1] = -lAxis;
-        joystickListRight[k_valuesToAverage-1] = -rAxis;
-        if (-lAxis < 0){
-        	averageJoystickLeft -= Math.pow(-lAxis, 2.0);
-        	
-        }else if (-lAxis >= 0){
-        	averageJoystickLeft += Math.pow(lAxis, 2.0);
-        }
-        
-        if (-rAxis < 0){
-        	averageJoystickRight -= Math.pow(rAxis, 2.0);
-        	
-        }else if (-rAxis >= 0){
-        	averageJoystickRight += Math.pow(-rAxis, 2.0);
-        }
-        if (averageJoystickRight > 0.5 && averageJoystickLeft < -0.5){
-        	averageJoystickRight *= 0.7;
-        	averageJoystickLeft *= 0.7;
-        }
-        
-        averageJoystickLeft /= k_valuesToAverage;
-        averageJoystickRight /= k_valuesToAverage;
-
-        driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
-    	//Collector arm up and down
-        if (driveController.getRawButton(2)) { //up
-        	collectorArm.set(true);
-        	armPosition = "Up";
-        }
-        if (driveController.getRawButton(1)) { //down
-        	collectorArm.set(false);
-        	armPosition = "Down";
-        }
-        
-        //Hood up and down
-        if (operatorController.getPOV() == 0) {
-        	shooterHood.set(true);
-        	hoodPosition = "Up";
-        }
-        else if (operatorController.getPOV() == 180) {
-            shooterHood.set(false);
-            hoodPosition = "Down";
-        }
-
-        //Shooter method
-        
-
-        //Shooter multi-RPM
-        if (operatorController.getRawButton(5)) { //Low
-        	Pid.setSetpoint(((k_RPM1/60)*360)*1.5);
-        	Pid.enable();
-        	shooterSpeedDisplayed = "Low";
-        	if (operatorController.getRawButton(2)) {
-            	mCollector.set(1);
-            }
-        	else {
-        		mCollector.set(0);
-        	}
-        	isShooting = true;
-        }
-        else if (operatorController.getRawButton(6)) { //Medium 1
-        	Pid.setSetpoint(((k_RPM2/60)*360)*1.5);
-        	Pid.enable();
-        	shooterSpeedDisplayed = "Medium 1";
-        	if (operatorController.getRawButton(2)) {
-            	mCollector.set(1);
-            }
-        	else {
-        		mCollector.set(0);
-        	}
-        	isShooting = true;
-        }
-        else if (operatorController.getRawButton(7)) { //Medium 2
-        	Pid.setSetpoint(((k_RPM3/60)*360)*1.5);
-        	Pid.enable();
-        	shooterSpeedDisplayed = "Medium 2";
-        	if (operatorController.getRawButton(2)) {
-            	mCollector.set(1);
-            }
-        	else {
-        		mCollector.set(0);
-        	}
-        	isShooting = true;
-        }
-        else if (operatorController.getRawButton(8)) { //High
-        	Pid.setSetpoint(((k_RPM4/60)*360)*1.5);
-        	Pid.enable();
-        	shooterSpeedDisplayed = "High";
-        	if (operatorController.getRawButton(2)) {
-            	mCollector.set(1);
-            }
-        	else {
-        		mCollector.set(0);
-        	}
-        	isShooting = true;
-        }
-        else { //PID off
-        	Pid.setSetpoint(0);
-        	Pid.disable();
-        	shooterSpeedDisplayed = "off";
-        	isShooting = false;
-        }
-        if (detect && isShooting){
-        	detect = false;
-        }
-        //Collector detection 
-        if (operatorController.getRawButton(3) && !detect) { //for intake
-        	mCollector.set(1.0);
-        }
-        else if (operatorController.getRawButton(1)) { //for outtake 
-            mCollector.set(-1.0);
-        }
-        else { //Collector off
-        	mCollector.set(0);
-        }
-        
-        
-        //SmartDashboard information
-        SmartDashboard.putNumber("Motor Revolutions/M ", ((shooterSpeed.getRate()/1.5)/360)*60);
-        SmartDashboard.putNumber("Joystick D-pad ", driveController.getPOV());
-        SmartDashboard.putString("Arm position ", armPosition);
-        SmartDashboard.putString("Hood Position ", hoodPosition);
-        SmartDashboard.putString("Shooter setting ", shooterSpeedDisplayed);
-        SmartDashboard.putNumber("Location", location);
+    	Teleop.teleopPeriodic();
     }   
     
     public void disabledInit() {
