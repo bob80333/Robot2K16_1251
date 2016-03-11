@@ -17,7 +17,8 @@ public class Teleop {
     static boolean isShooting = false;
 
     public static void teleopInit(){
-
+        Robot.Pid.disable();
+        Robot.compressor.start();
     }
 
     public static void teleopPeriodic(){

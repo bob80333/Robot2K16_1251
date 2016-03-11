@@ -2,6 +2,7 @@ package org.usfirst.frc.team1251.robot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -60,7 +61,8 @@ public class Robot extends IterativeRobot {
     public static final int k_valuesToAverage = 5; // number of values to average from the driver input
     public static int location = -1;
     public static int defense = -1;
-	
+    public static List<Contour> contours = new ArrayList<>();
+
     public void robotInit() {    	
     	//Drive base using PWM 0, 1, 2, 3
     	driveBase = new RobotDrive(0, 1, 2, 3);
@@ -187,8 +189,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit() {
-    	Pid.disable();
-    	compressor.start();
+    	Teleop.teleopInit();
     }
 
     public void teleopPeriodic() {
