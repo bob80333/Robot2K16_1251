@@ -4,16 +4,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-import edu.wpi.first.wpilibj.Joystick.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 
+
+
+
+
+import edu.wpi.first.wpilibj.vision.USBCamera;
 
 import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.vision.Contour;
@@ -33,13 +35,15 @@ public class Robot extends IterativeRobot {
 	public static Joystick driveController, operatorController;
 	public static Victor mCollector, mShooter;
 	public static Compressor compressor;
-	public static Solenoid collectorArm, shooterHood;
+	public static DoubleSolenoid collectorArm;
+	public static Solenoid shooterHood;
 	public static DigitalInput ballDetect;
+	public static CameraServer tempCam;
 	public static Encoder shooterSpeed;
 	public static AnalogPotentiometer Pot;
 	public static PIDController Pid;
 	public static String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
-	public static boolean testAuto = true;
+	public static boolean testAuto = false;
     public static Vision vision;
 	public static Thread visionThread;
 	public static double[] anglesToTarget = {};
@@ -50,12 +54,13 @@ public class Robot extends IterativeRobot {
     public static AnalogGyro vGyro;
     public static ADXRS450_Gyro hGyro;
     public static boolean isVisionTargeting = false;
+    public static boolean isCameraStarted = false;
 	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
-			k_RPM1 = 1000, 	//Low RPM speed
-			k_RPM2 = 2000,	//Mid 1 RPM speed
-			k_RPM3 = 3000, 	//Mid 2 RPM speed
-			k_RPM4 = 4000,	//High RPM speed
+			k_RPM1 = 18750, 	//Low RPM speed
+			k_RPM2 = 21250,	//Mid 1 RPM speed
+			k_RPM3 = 24500, 	//Mid 2 RPM speed
+			k_RPM4 = 25000,	//High RPM speed
 
             k_TOLERANCE = 0.05;
     public static final int k_valuesToAverage = 5; // number of values to average from the driver input
@@ -66,7 +71,6 @@ public class Robot extends IterativeRobot {
     public void robotInit() {    	
     	//Drive base using PWM 0, 1, 2, 3
     	driveBase = new RobotDrive(0, 1, 2, 3);
-    	
     	//Joystick for the driver and operator
     	driveController = new Joystick(0);
     	operatorController = new Joystick(1);
@@ -74,20 +78,21 @@ public class Robot extends IterativeRobot {
     	//Compressor
     	compressor = new Compressor();
     	
-    	//Solenoids using pneumatics slot 0, 1
-    	collectorArm = new Solenoid(0);
-    	shooterHood = new Solenoid(1);
+    	//Solenoids using pneumatics slot 0, 1, 2, 3
+    	collectorArm = new DoubleSolenoid(0, 1);
+    	shooterHood = new Solenoid(2, 3);
     	
     	//Button detector using DIO 0
     	ballDetect = new DigitalInput(0); 
     	
     	//Motors using PWM 4, 5
     	mCollector = new Victor(4);
+    	mCollector.setInverted(true);
     	mShooter = new Victor(5);
     	mShooter.setInverted(true);
     	
     	//Encoder using DIO 1, 2, 3
-    	shooterSpeed = new Encoder(2, 3, true, EncodingType.k2X);
+    	shooterSpeed = new Encoder(2, 1, true, EncodingType.k2X);
     	
     	//Potentiometer using analog 3
     	Pot = new AnalogPotentiometer(3, 360, 0);
@@ -96,8 +101,8 @@ public class Robot extends IterativeRobot {
     	shooterSpeed.setDistancePerPulse(1.5);
 		shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
 		Pot.setPIDSourceType(PIDSourceType.kDisplacement);
-		Pid = new PIDController(0.05, 0.005, 0.5, shooterSpeed, mShooter);
-
+		Pid = new PIDController(0.0005, 0.004, 0.0001, shooterSpeed, mShooter, 0.001);
+	
         Scanner scan = null;
         try {
             // read in usb 1
@@ -147,24 +152,22 @@ public class Robot extends IterativeRobot {
         //eventManager.fireEvent(AutoInitEvent.class);
 
 
-    	visionThread.run();
+    	//visionThread.run();
     	autoLoopCounter = 1;
+    	collectorArm.set(Value.kForward);
 
     }
     
     public void autonomousPeriodic() {
 
-        /*eventManager.add(AutoPeriodicListener.class, autoPeriodicListener);
-        eventManager.fireEvent(AutoPeriodicEvent.class);
-
 
     	autoLoopCounter++;
-        if (Autonomous.goneDownDefense){
-            Autonomous.loopsSinceCrossed++;
+        /*if (Auto.goneDownDefense){
+            Auto.loopsSinceCrossed++;
         }
-        //if (!//Autonomous.crossed){
-            //Autonomous.crossDefenses(defense);
-        //}*/
+        if (!Autonomous.crossed){
+            Autonomous.crossDefenses(defense);
+        =}*/
         if (testAuto) {
             //Runs the visionThread code
             if (visionThread.isAlive()) {
@@ -183,7 +186,10 @@ public class Robot extends IterativeRobot {
 
 
         }else{
-            driveBase.tankDrive(.70, .77);
+        	if (autoLoopCounter <= 125){
+        		driveBase.tankDrive(0.8, 0.8);
+        	}
+            
         }
 
     }

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1251.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -19,6 +20,7 @@ public class Teleop {
     public static void teleopInit(){
         Robot.Pid.disable();
         Robot.compressor.start();
+        
     }
 
     public static void teleopPeriodic(){
@@ -41,37 +43,40 @@ public class Teleop {
             averageJoystickRight += joystickListRight[i];
         }
         // add the new joystick input and add it to the average as well
-        joystickListLeft[Robot.k_valuesToAverage-1] = -lAxis;
-        joystickListRight[Robot.k_valuesToAverage-1] = -rAxis;
-        if (-lAxis < 0){
-            averageJoystickLeft -= Math.pow(-lAxis, 2.0);
+        joystickListLeft[Robot.k_valuesToAverage-1] = lAxis;
+        joystickListRight[Robot.k_valuesToAverage-1] = rAxis;
+        if (lAxis < 0){
+            averageJoystickLeft -= Math.pow(lAxis, 2.0);
 
-        }else if (-lAxis >= 0){
+        }else if (lAxis >= 0){
             averageJoystickLeft += Math.pow(lAxis, 2.0);
         }
 
-        if (-rAxis < 0){
+        if (rAxis < 0){
             averageJoystickRight -= Math.pow(rAxis, 2.0);
 
-        }else if (-rAxis >= 0){
-            averageJoystickRight += Math.pow(-rAxis, 2.0);
+        }else if (rAxis >= 0){
+            averageJoystickRight += Math.pow(rAxis, 2.0);
         }
-        if (averageJoystickRight > 0.5 && averageJoystickLeft < -0.5){
+        if (averageJoystickRight > 0.5 && averageJoystickLeft < -0.5 && !Robot.driveController.getRawButton(6)){
             averageJoystickRight *= 0.7;
             averageJoystickLeft *= 0.7;
         }
+        
+        averageJoystickLeft *= 0.8;
+        averageJoystickRight *= 0.8;
 
         averageJoystickLeft /= Robot.k_valuesToAverage;
         averageJoystickRight /= Robot.k_valuesToAverage;
 
         Robot.driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
         //Collector arm up and down
-        if (Robot.driveController.getRawButton(2)) { //up
-            Robot.collectorArm.set(true);
+        if (Robot.driveController.getRawButton(4)) { //up
+            Robot.collectorArm.set(Value.kForward );
             Robot.armPosition = "Up";
         }
-        if (Robot.driveController.getRawButton(1)) { //down
-            Robot.collectorArm.set(false);
+        else if (Robot.driveController.getRawButton(3)) { //down
+            Robot.collectorArm.set(Value.kReverse);
             Robot.armPosition = "Down";
         }
 
@@ -90,7 +95,8 @@ public class Teleop {
 
         //Shooter multi-RPM
         if (Robot.operatorController.getRawButton(5)) { //Low
-            Robot.Pid.setSetpoint(((Robot.k_RPM1/60)*360)*1.5);
+            Robot.Pid.setSetpoint(Robot.k_RPM1);
+            //Robot.Pid.setPID(0.0005, 0, 0);
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "Low";
             if (Robot.operatorController.getRawButton(2)) {
@@ -102,7 +108,8 @@ public class Teleop {
             isShooting = true;
         }
         else if (Robot.operatorController.getRawButton(6)) { //Medium 1
-            Robot.Pid.setSetpoint(((Robot.k_RPM2/60)*360)*1.5);
+            Robot.Pid.setSetpoint(Robot.k_RPM2);
+            //Robot.Pid.setPID(0.0005, 0, 0);
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "Medium 1";
             if (Robot.operatorController.getRawButton(2)) {
@@ -114,7 +121,8 @@ public class Teleop {
             isShooting = true;
         }
         else if (Robot.operatorController.getRawButton(7)) { //Medium 2
-            Robot.Pid.setSetpoint(((Robot.k_RPM3/60)*360)*1.5);
+            Robot.Pid.setSetpoint(Robot.k_RPM3);
+            //Robot.Pid.setPID(0.001, 0.004, 0);
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "Medium 2";
             if (Robot.operatorController.getRawButton(2)) {
@@ -126,7 +134,8 @@ public class Teleop {
             isShooting = true;
         }
         else if (Robot.operatorController.getRawButton(8)) { //High
-            Robot.Pid.setSetpoint(((Robot.k_RPM4/60)*360)*1.5);
+            Robot.Pid.setSetpoint(Robot.k_RPM4);
+            //Robot.Pid.setPID(0.001, 0.004, 0);
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "High";
             if (Robot.operatorController.getRawButton(2)) {
@@ -137,7 +146,7 @@ public class Teleop {
             }
             isShooting = true;
         }
-        else { //PID off
+        else { //PID off;
             Robot.Pid.setSetpoint(0);
             Robot.Pid.disable();
             Robot.shooterSpeedDisplayed = "off";
@@ -147,17 +156,16 @@ public class Teleop {
             detect = false;
         }
         //Collector detection
-        if (Robot.operatorController.getRawButton(3) && !detect) { //for intake
+        if (Robot.operatorController.getRawButton(1) && !detect) { //for intake
             Robot.mCollector.set(1.0);
         }
-        else if (Robot.operatorController.getRawButton(1)) { //for outtake
+        else if (Robot.operatorController.getRawButton(3)) { //for outtake
             Robot.mCollector.set(-1.0);
         }
         else { //Collector off
             Robot.mCollector.set(0);
         }
-
-
+ 
         //SmartDashboard information
         SmartDashboard.putNumber("Motor Revolutions/M ", ((Robot.shooterSpeed.getRate()/1.5)/360)*60);
         SmartDashboard.putNumber("Joystick D-pad ", Robot.driveController.getPOV());
@@ -165,5 +173,7 @@ public class Teleop {
         SmartDashboard.putString("Hood Position ", Robot.hoodPosition);
         SmartDashboard.putString("Shooter setting ", Robot.shooterSpeedDisplayed);
         SmartDashboard.putNumber("Location", Robot.location);
-    }
+        SmartDashboard.putNumber("Shooter RPM", Robot.shooterSpeed.getRate());
+        SmartDashboard.putData("e", Robot.Pid);
+}
 }
