@@ -21,6 +21,11 @@ public class AutoUtils {
         public static boolean targetLockedSuccessfully = false;
         public static final double angleMargin = 0.5;
         public static final double k_turnPercentage = 0.002;
+        public static double startingAngle = 0;
+        public static int startingLoop = 0;
+        public static int currentLoop = 0;
+        public static boolean turningCompleted = false;
+        public static boolean turningFirstLoop = true;
 
         public static void crossDefenses(int defense) {
             switch (defense) {
@@ -111,5 +116,39 @@ public class AutoUtils {
                 }
             }
         }
+    public static void changeDrivetrainAngle(double changeInDegrees, int loopsToTake, boolean mode){ //true auto, false teleop
+            if (mode && turningFirstLoop) {
+                startingLoop = Auto.autoLoopCounter;
+                currentLoop = 1;
+                turningFirstLoop = false;
+                turningCompleted = false;
+                startingAngle = Robot.hGyro.getAngle();
+            } else if (!mode && turningFirstLoop) {
+                turningFirstLoop = false;
+                turningCompleted = false;
+                startingLoop = Teleop.teleopLoopCounter;
+                startingAngle = Robot.hGyro.getAngle();
+                currentLoop = 1;
+            }
+        if (!turningCompleted) {
+            if (changeInDegrees < 0) {
+                Robot.driveBase.tankDrive(((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage), -((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage));
+            } else if (changeInDegrees > 0) {
+                Robot.driveBase.tankDrive(((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage), -((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage));
+            } else {
+                // uhhh
+                // done, right?
+                turningCompleted = true;
+                turningFirstLoop = true;
+            }
+                if ((changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) < angleMargin){
+                    turningCompleted = true;
+            }
+        }
+        if (currentLoop == loopsToTake){
+            turningCompleted = true;
+            turningFirstLoop = true;
+        }
     }
+}
 

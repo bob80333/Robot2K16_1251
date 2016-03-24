@@ -190,6 +190,13 @@
       </item>
     </group>
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="Eric">
+      <words>
+        <w>drivetrain</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Robot2K16_1251.iml" filepath="$PROJECT_DIR$/Robot2K16_1251.iml" />

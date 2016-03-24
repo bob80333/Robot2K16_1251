@@ -148,50 +148,12 @@ public class Robot extends IterativeRobot {
 
     public void autonomousInit() {
 
-      //  eventManager.add(AutoInitListener.class, autoInitListener);
-        //eventManager.fireEvent(AutoInitEvent.class);
-
-
-    	//visionThread.run();
-    	autoLoopCounter = 1;
-    	collectorArm.set(Value.kForward);
+      Auto.onAutoInit();
 
     }
     
     public void autonomousPeriodic() {
-
-
-    	autoLoopCounter++;
-        /*if (Auto.goneDownDefense){
-            Auto.loopsSinceCrossed++;
-        }
-        if (!Autonomous.crossed){
-            Autonomous.crossDefenses(defense);
-        =}*/
-        if (testAuto) {
-            //Runs the visionThread code
-            if (visionThread.isAlive()) {
-                visionThread.notify();
-                visionThread.run();
-            } else {
-                visionThread.run();
-            }
-           // targetDataArrays = vision.getTargetData();
-            
-            //unpack data into 2 single dimension arrays
-            distancesToTarget = targetDataArrays[0];
-            anglesToTarget = targetDataArrays[1];
-            //choose two lowest angles, and then choose the lower angled one b/c it will have less total  distance
-
-
-
-        }else{
-        	if (autoLoopCounter <= 125){
-        		driveBase.tankDrive(0.8, 0.8);
-        	}
-            
-        }
-
+        Auto.onAutoPeriodic();
     }
     
     public void teleopInit() {

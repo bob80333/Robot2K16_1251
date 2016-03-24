@@ -16,11 +16,12 @@ public class Teleop {
     static double[] joystickListRight = new double[Robot.k_valuesToAverage];
     static boolean detect;
     static boolean isShooting = false;
+    static int teleopLoopCounter;
 
     public static void teleopInit(){
         Robot.Pid.disable();
         Robot.compressor.start();
-        
+        teleopLoopCounter = 1;
     }
 
     public static void teleopPeriodic(){
@@ -174,6 +175,7 @@ public class Teleop {
         SmartDashboard.putString("Shooter setting ", Robot.shooterSpeedDisplayed);
         SmartDashboard.putNumber("Location", Robot.location);
         SmartDashboard.putNumber("Shooter RPM", Robot.shooterSpeed.getRate());
-        SmartDashboard.putData("e", Robot.Pid);
-}
+
+        teleopLoopCounter++;
+    }
 }
