@@ -26,7 +26,7 @@ public class Teleop {
 
     public static void teleopPeriodic(){
 //Declaring variable to detector button
-        detect = Robot.ballDetect.get();
+        detect = !Robot.ballDetect.get();
 
         //Declaring variables to driver axis
         lAxis = -Robot.driveController.getRawAxis(1);
