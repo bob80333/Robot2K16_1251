@@ -11,16 +11,15 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 
-
-
-
-
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.vision.USBCamera;
 
 import org.apache.commons.math3.util.MathUtils;
 import org.usfirst.frc.team1251.robot.vision.Contour;
 
 
+import org.usfirst.frc.team1251.robot.vision.TurnOffPi;
 import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
@@ -31,6 +30,7 @@ import org.usfirst.frc.team1251.robot.vision.Vision;
 
 public class Robot extends IterativeRobot {
 
+    public static Command turnOffPi;
 	public static RobotDrive driveBase;
 	public static Joystick driveController, operatorController;
 	public static Victor mCollector, mShooter;
@@ -136,7 +136,7 @@ public class Robot extends IterativeRobot {
             }
         }
 
-
+        turnOffPi = new TurnOffPi();
         vision = new Vision();
 		visionThread = new Thread(vision, "Vision-Tracking");
 
