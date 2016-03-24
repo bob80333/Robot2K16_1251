@@ -166,9 +166,11 @@ public class Robot extends IterativeRobot {
     
     public void disabledInit() {
     	compressor.stop();
+        Disabled.onDisabledInit();
     }
     
     public void disabledPeriodic(){
+        Disabled.onDisabledPeriodic();
     }
 
     /**
