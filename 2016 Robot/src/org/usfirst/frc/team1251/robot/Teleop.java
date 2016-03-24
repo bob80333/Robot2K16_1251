@@ -63,9 +63,13 @@ public class Teleop {
             averageJoystickRight *= 0.7;
             averageJoystickLeft *= 0.7;
         }
-        
-        averageJoystickLeft *= 0.8;
-        averageJoystickRight *= 0.8;
+        if (!Robot.driveController.getRawButton(6)) {
+            averageJoystickLeft *= 0.8;
+            averageJoystickRight *= 0.8;
+        }else{
+            averageJoystickLeft *= 0.95;
+            averageJoystickRight *= 0.95;
+        }
 
         averageJoystickLeft /= Robot.k_valuesToAverage;
         averageJoystickRight /= Robot.k_valuesToAverage;
