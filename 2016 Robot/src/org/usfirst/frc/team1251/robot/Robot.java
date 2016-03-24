@@ -57,9 +57,9 @@ public class Robot extends IterativeRobot {
     public static boolean isCameraStarted = false;
 	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
-			k_RPM1 = 18750, 	//Low RPM speed
-			k_RPM2 = 21250,	//Mid 1 RPM speed
-			k_RPM3 = 24500, 	//Mid 2 RPM speed
+			k_RPM1 = 15750, 	//Low RPM speed
+			k_RPM2 = 18750,	//Mid 1 RPM speed
+			k_RPM3 = 24100, 	//Mid 2 RPM speed
 			k_RPM4 = 25000,	//High RPM speed
 
             k_TOLERANCE = 0.05;
