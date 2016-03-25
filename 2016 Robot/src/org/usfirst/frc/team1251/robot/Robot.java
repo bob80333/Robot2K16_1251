@@ -57,8 +57,8 @@ public class Robot extends IterativeRobot {
     public static boolean isCameraStarted = false;
 	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
-			k_RPM1 = 15750, 	//Low RPM speed
-			k_RPM2 = 18750,	//Mid 1 RPM speed
+			k_RPM1 = 16250, 	//Low RPM speed
+			k_RPM2 = 18000,	//Mid 1 RPM speed
 			k_RPM3 = 24100, 	//Mid 2 RPM speed
 			k_RPM4 = 25000,	//High RPM speed
 
@@ -101,7 +101,7 @@ public class Robot extends IterativeRobot {
     	shooterSpeed.setDistancePerPulse(1.5);
 		shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
 		Pot.setPIDSourceType(PIDSourceType.kDisplacement);
-		Pid = new PIDController(0.0005, 0.004, 0.0001, shooterSpeed, mShooter, 0.001);
+		Pid = new PIDController(0.0002, 0.08, 0.0001, shooterSpeed, mShooter, 0.001);
 	
         Scanner scan = null;
         try {

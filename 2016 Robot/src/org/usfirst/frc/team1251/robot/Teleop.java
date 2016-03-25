@@ -63,12 +63,13 @@ public class Teleop {
             averageJoystickRight *= 0.7;
             averageJoystickLeft *= 0.7;
         }
-        if (!Robot.driveController.getRawButton(6)) {
-            averageJoystickLeft *= 0.8;
-            averageJoystickRight *= 0.8;
+        
+        if (!Robot.driveController.getRawButton(6)){
+        averageJoystickLeft *= 0.8;
+        averageJoystickRight *= 0.8;
         }else{
-            averageJoystickLeft *= 0.95;
-            averageJoystickRight *= 0.95;
+        	averageJoystickLeft *= 0.95;
+        	averageJoystickRight *= 0.95;
         }
 
         averageJoystickLeft /= Robot.k_valuesToAverage;
@@ -100,8 +101,10 @@ public class Teleop {
 
         //Shooter multi-RPM
         if (Robot.operatorController.getRawButton(5)) { //Low
+        	//Robot.mShooter.set(.7);
             Robot.Pid.setSetpoint(Robot.k_RPM1);
-            Robot.Pid.setPID(0.0005, 0.004, 0, 0);
+            //Robot.Pid.setPID(0.0005, 0.004, 0, 0);
+            
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "Low";
             if (Robot.operatorController.getRawButton(2)) {
@@ -113,8 +116,9 @@ public class Teleop {
             isShooting = true;
         }
         else if (Robot.operatorController.getRawButton(6)) { //Medium 1
+        	//Robot.mShooter.set(0.78);
             Robot.Pid.setSetpoint(Robot.k_RPM2);
-            Robot.Pid.setPID(0.0009, 0, 0, 0);
+            //Robot.Pid.setPID(0.0009, 0, 0, 0);
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "Medium 1";
             if (Robot.operatorController.getRawButton(2)) {
@@ -126,8 +130,9 @@ public class Teleop {
             isShooting = true;
         }
         else if (Robot.operatorController.getRawButton(7)) { //Medium 2
+        	//Robot.mShooter.set(1);
             Robot.Pid.setSetpoint(Robot.k_RPM3);
-            Robot.Pid.setPID(0.0004, 0.004, 0.0001, 0);
+            //Robot.Pid.setPID(0.0004, 0.004, 0.0001, 0);
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "Medium 2";
             if (Robot.operatorController.getRawButton(2)) {
@@ -139,8 +144,9 @@ public class Teleop {
             isShooting = true;
         }
         else if (Robot.operatorController.getRawButton(8)) { //High
+        	//Robot.mShooter.set(1);
             Robot.Pid.setSetpoint(Robot.k_RPM4);
-            Robot.Pid.setPID(0.001, 0.004, 0, 1);
+            //Robot.Pid.setPID(0.001, 0.004, 0, 1);
             Robot.Pid.enable();
             Robot.shooterSpeedDisplayed = "High";
             if (Robot.operatorController.getRawButton(2)) {
@@ -153,6 +159,7 @@ public class Teleop {
         }
         else { //PID off;
             Robot.Pid.setSetpoint(0);
+        	//Robot.mShooter.set(0);
             Robot.Pid.disable();
             Robot.shooterSpeedDisplayed = "off";
             isShooting = false;
@@ -179,6 +186,7 @@ public class Teleop {
         SmartDashboard.putString("Shooter setting ", Robot.shooterSpeedDisplayed);
         SmartDashboard.putNumber("Location", Robot.location);
         SmartDashboard.putNumber("Shooter RPM", Robot.shooterSpeed.getRate());
+        SmartDashboard.putData("PID", Robot.Pid);
 
         teleopLoopCounter++;
     }
