@@ -116,20 +116,14 @@ public class AutoUtils {
                 }
             }
         }
-    public static void changeDrivetrainAngle(double changeInDegrees, int loopsToTake, boolean mode){ //true auto, false teleop
-            if (mode && turningFirstLoop) {
-                startingLoop = Auto.autoLoopCounter;
+    public static void changeDrivetrainAngle(double changeInDegrees, int loopsToTake){ //true auto, false teleop
+            if (turningFirstLoop) {
                 currentLoop = 1;
                 turningFirstLoop = false;
                 turningCompleted = false;
                 startingAngle = Robot.hGyro.getAngle();
-            } else if (!mode && turningFirstLoop) {
-                turningFirstLoop = false;
-                turningCompleted = false;
-                startingLoop = Teleop.teleopLoopCounter;
-                startingAngle = Robot.hGyro.getAngle();
-                currentLoop = 1;
             }
+
         if (!turningCompleted) {
             if (changeInDegrees < 0) {
                 Robot.driveBase.tankDrive(((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage), -((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage));
@@ -148,6 +142,23 @@ public class AutoUtils {
         if (currentLoop == loopsToTake){
             turningCompleted = true;
             turningFirstLoop = true;
+        }
+    }
+
+    public static void crossPort(){
+        if (Robot.autoLoopCounter < 5){
+            Robot.driveBase.tankDrive(0.8, 0.8);
+        }else if (Robot.autoLoopCounter < 10){
+            Robot.driveBase.tankDrive(0.1, 0.1);
+            Robot.mCollector.set(1);
+        }else if (Robot.autoLoopCounter < 20){
+            Robot.driveBase.tankDrive(0.85, 0.85);
+        }else if (Robot.autoLoopCounter < 100){
+            Robot.driveBase.tankDrive(0.85, 0.85);
+            Robot.mCollector.set(0);
+        }else{
+            Robot.mCollector.set(0);
+            Robot.driveBase.tankDrive(0, 0);
         }
     }
 }
