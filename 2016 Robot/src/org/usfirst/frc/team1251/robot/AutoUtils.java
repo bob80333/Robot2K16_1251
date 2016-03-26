@@ -2,6 +2,8 @@ package org.usfirst.frc.team1251.robot;
 
 import org.usfirst.frc.team1251.robot.vision.Contour;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+
 /**
  * Created by Eric on 3/10/2016.
  */
@@ -110,12 +112,14 @@ public class AutoUtils {
     }
 
     public static void crossPort(){
-        if (Robot.autoLoopCounter < 5){
-            Robot.driveBase.tankDrive(0.8, 0.8);
-        }else if (Robot.autoLoopCounter < 10){
-            Robot.driveBase.tankDrive(0.1, 0.1);
-            Robot.mCollector.set(1);
-        }else if (Robot.autoLoopCounter < 20){
+        if (Robot.autoLoopCounter < 25){
+            Robot.driveBase.tankDrive(0.6, 0.6);
+            Robot.collectorArm.set(Value.kReverse);
+        }else if (Robot.autoLoopCounter < 30){
+            Robot.driveBase.tankDrive(0, 0);
+            Robot.mCollector.set(-1);
+        }else if (Robot.autoLoopCounter < 50){
+        	Robot.collectorArm.set(Value.kForward);
             Robot.driveBase.tankDrive(0.85, 0.85);
         }else if (Robot.autoLoopCounter < 100){
             Robot.driveBase.tankDrive(0.85, 0.85);
