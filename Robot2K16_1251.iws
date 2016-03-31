@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c783161d-fd21-404a-b66d-4ae9b7b6dba5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutoUtils.java" afterPath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutoUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Auto.java" afterPath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Auto.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Disabled.java" afterPath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Disabled.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Robot.java" afterPath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Robot.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/Vision.java" afterPath="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/Vision.java" />
     </list>
     <ignored path="Robot2K16_1251.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -104,12 +107,9 @@
       <file leaf-file-name="Robot.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Robot.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="172" column="38" selection-start-line="172" selection-start-column="38" selection-end-line="172" selection-end-column="38" />
-              <folding>
-                <element signature="e#5593#5594#0" expanded="true" />
-                <element signature="e#5638#5639#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="-26.25">
+              <caret line="110" column="24" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -119,10 +119,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="41" column="17" selection-start-line="41" selection-start-column="17" selection-end-line="41" selection-end-column="17" />
-              <folding>
-                <element signature="e#685#686#0" expanded="false" />
-                <element signature="e#714#715#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -137,12 +134,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Disabled.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Disabled.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Disabled.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
-              <folding />
+            <state vertical-scroll-proportion="0.7046263">
+              <caret line="18" column="35" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#263#264#0" expanded="true" />
+                <element signature="e#305#306#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -150,18 +151,18 @@
       <file leaf-file-name="Auto.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Auto.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
+            <state vertical-scroll-proportion="-3.0">
+              <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AutoUtils.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AutoUtils.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutoUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.92280704">
-              <caret line="165" column="0" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -171,11 +172,10 @@
         <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/Vision.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="71" column="64" selection-start-line="71" selection-start-column="64" selection-end-line="71" selection-end-column="64" />
+              <caret line="90" column="25" selection-start-line="90" selection-start-column="25" selection-end-line="90" selection-end-column="25" />
               <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#3369#3370#0" expanded="false" />
-                <element signature="e#3400#3401#0" expanded="false" />
+                <element signature="e#3347#3348#0" expanded="true" />
+                <element signature="e#3370#3371#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -486,14 +486,14 @@
         <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/events/listeners/DisabledPeriodicListener.java" />
         <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/events/EventManager.java" />
         <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutonomousUtilities.java" />
-        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/Vision.java" />
         <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutoUtilities.java" />
-        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Auto.java" />
-        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Disabled.java" />
         <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/TurnOffPi.java" />
-        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Robot.java" />
         <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Teleop.java" />
         <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutoUtils.java" />
+        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Auto.java" />
+        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Robot.java" />
+        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/Vision.java" />
+        <option value="$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Disabled.java" />
       </list>
     </option>
   </component>
@@ -550,16 +550,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -634,7 +624,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="PackagesPane">
         <subPane>
           <PATH>
@@ -659,6 +648,17 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="org.usfirst.frc.team1251.robot" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -978,7 +978,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32969153" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995495" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32995495" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12968917" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32969153" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1057,7 +1057,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#263#264#0" expanded="true" />
+            <element signature="e#305#306#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1082,9 +1086,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="71" column="64" selection-start-line="71" selection-start-column="64" selection-end-line="71" selection-end-column="64" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1093,10 +1096,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="138" column="8" selection-start-line="138" selection-start-column="8" selection-end-line="138" selection-end-column="8" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1104,10 +1104,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="19" column="46" selection-start-line="19" selection-start-column="46" selection-end-line="19" selection-end-column="46" />
-          <folding>
-            <element signature="e#685#686#0" expanded="false" />
-            <element signature="e#714#715#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1123,7 +1120,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#263#264#0" expanded="true" />
+            <element signature="e#305#306#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1148,9 +1149,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="71" column="64" selection-start-line="71" selection-start-column="64" selection-end-line="71" selection-end-column="64" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1159,10 +1159,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="63" column="40" selection-start-line="63" selection-start-column="40" selection-end-line="63" selection-end-column="40" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1187,9 +1184,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="71" column="64" selection-start-line="71" selection-start-column="64" selection-end-line="71" selection-end-column="64" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1198,10 +1194,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1210,9 +1203,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="71" column="64" selection-start-line="71" selection-start-column="64" selection-end-line="71" selection-end-column="64" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1221,10 +1213,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1233,9 +1222,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="90" column="24" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="24" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1255,10 +1243,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="193" column="18" selection-start-line="193" selection-start-column="18" selection-end-line="193" selection-end-column="18" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1267,9 +1252,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1289,10 +1273,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="277" column="13" selection-start-line="277" selection-start-column="13" selection-end-line="277" selection-end-column="13" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1301,9 +1282,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1323,10 +1303,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="136" column="26" selection-start-line="136" selection-start-column="26" selection-end-line="136" selection-end-column="26" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1335,9 +1312,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1346,10 +1322,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="136" column="26" selection-start-line="136" selection-start-column="26" selection-end-line="136" selection-end-column="26" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1358,9 +1331,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1369,10 +1341,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="25" column="39" selection-start-line="25" selection-start-column="39" selection-end-line="25" selection-end-column="39" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1381,9 +1350,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="87" column="52" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1392,10 +1360,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1404,9 +1369,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="87" column="52" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1415,10 +1379,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="100" column="70" selection-start-line="100" selection-start-column="70" selection-end-line="100" selection-end-column="70" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1427,9 +1388,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1438,10 +1398,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1449,10 +1406,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1460,10 +1414,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1478,10 +1429,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1503,22 +1451,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/Vision.java">
+    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutoUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="71" column="64" selection-start-line="71" selection-start-column="64" selection-end-line="71" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3369#3370#0" expanded="false" />
-            <element signature="e#3400#3401#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Disabled.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+          <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1527,21 +1463,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="41" column="17" selection-start-line="41" selection-start-column="17" selection-end-line="41" selection-end-column="17" />
-          <folding>
-            <element signature="e#685#686#0" expanded="false" />
-            <element signature="e#714#715#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Robot.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="172" column="38" selection-start-line="172" selection-start-column="38" selection-end-line="172" selection-end-column="38" />
-          <folding>
-            <element signature="e#5593#5594#0" expanded="true" />
-            <element signature="e#5638#5639#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="-26.25">
+          <caret line="110" column="24" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Auto.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.0">
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1553,19 +1491,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Auto.java">
+    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/vision/Vision.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
-          <folding />
+          <caret line="90" column="25" selection-start-line="90" selection-start-column="25" selection-end-line="90" selection-end-column="25" />
+          <folding>
+            <element signature="e#3347#3348#0" expanded="true" />
+            <element signature="e#3370#3371#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/AutoUtils.java">
+    <entry file="file://$PROJECT_DIR$/2016 Robot/src/org/usfirst/frc/team1251/robot/Disabled.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.92280704">
-          <caret line="165" column="0" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.7046263">
+          <caret line="18" column="35" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#263#264#0" expanded="true" />
+            <element signature="e#305#306#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

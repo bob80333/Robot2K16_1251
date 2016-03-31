@@ -87,6 +87,10 @@ public class Vision implements Runnable{
         this.fireButtonPressed = fireButtonPressed;
     }
 
+	public boolean isFoundData(){
+		return foundData;
+	}
+
     public synchronized List<Contour> getContours(){
         return contours;
     }
