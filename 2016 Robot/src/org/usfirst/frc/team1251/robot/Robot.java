@@ -8,19 +8,9 @@ import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-
-
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.vision.USBCamera;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 import org.apache.commons.math3.util.MathUtils;
-import org.usfirst.frc.team1251.robot.vision.Contour;
-
-
-import org.usfirst.frc.team1251.robot.vision.TurnOffPi;
-import org.usfirst.frc.team1251.robot.vision.Vision;
 
 /**
  * This is the main code for team 1251's 2016 robot.
@@ -30,7 +20,6 @@ import org.usfirst.frc.team1251.robot.vision.Vision;
 
 public class Robot extends IterativeRobot {
 
-    public static Command turnOffPi;
 	public static RobotDrive driveBase;
 	public static Joystick driveController, operatorController;
 	public static Victor mCollector, mShooter;
@@ -44,10 +33,9 @@ public class Robot extends IterativeRobot {
 	public static PIDController Pid;
 	public static String armPosition="down", hoodPosition="down", shooterSpeedDisplayed ="off";
 	public static boolean testAuto = false;
-    public static Vision vision;
 	public static Thread visionThread;
-	public static double[] anglesToTarget = {};
-	public static double[] distancesToTarget = {};
+	public static double[] centerXs;
+	public static double[] areas;
 	public static double[][] targetDataArrays = new double[2][];
     public static final double PI = Math.PI;
 	public static int autoLoopCounter;
@@ -55,6 +43,7 @@ public class Robot extends IterativeRobot {
     public static ADXRS450_Gyro hGyro;
     public static boolean isVisionTargeting = false;
     public static boolean isCameraStarted = false;
+    public static final int cameraX = 320;
 	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
 			k_RPM1 = 16350, 	//Low RPM speed
@@ -63,10 +52,14 @@ public class Robot extends IterativeRobot {
 			k_RPM4 = 25000,	//High RPM speed
 
             k_TOLERANCE = 0.05;
-    public static final int k_valuesToAverage = 5; // number of values to average from the driver input
+    public static final int k_valuesToAverage = 5;// number of values to average from the driver input
+    public static final int camErrorPercent = 10;
     public static int location = -1;
     public static int defense = -1;
-    public static List<Contour> contours = new ArrayList<>();
+    public static boolean lockTargets = true;
+    public static boolean fireButton = false;
+    double largestArea = 0;
+    int largeAreaIndex;
 
     public void robotInit() {    	
     	//Drive base using PWM 0, 1, 2, 3
@@ -138,10 +131,6 @@ public class Robot extends IterativeRobot {
             }
         }
 
-        turnOffPi = new TurnOffPi();
-        vision = new Vision();
-		visionThread = new Thread(vision, "Vision-Tracking");
-
         vGyro = new AnalogGyro(0);
         hGyro= new ADXRS450_Gyro();
         vGyro.calibrate();
@@ -163,6 +152,28 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
+    	lockTargets = operatorController.getPOV() == 0.0;
+    	if (lockTargets){
+    	centerXs = grip.getNumberArray("targeting/centerX", new double[0]);
+    	areas = grip.getNumberArray("targeting/area", new double[0]);
+    	
+    	if (areas.length != 0){
+    		for (int i = 0; i < areas.length; i++){
+    			if (areas[i] > largestArea){
+    				largestArea = areas[i];
+    				largeAreaIndex = i;
+    			}
+    		}
+    	}
+    	
+    	if (centerXs.length != 0){
+    		if (centerXs[largeAreaIndex] > cameraX + (cameraX * 0.01 * camErrorPercent)){
+    			driveBase.tankDrive((1-(cameraX/centerXs[largeAreaIndex])), -(1-(cameraX/centerXs[largeAreaIndex])));
+    		}else if (centerXs[largeAreaIndex] < cameraX - (cameraX * 0.01 * camErrorPercent)){
+    			driveBase.tankDrive(((cameraX/centerXs[largeAreaIndex])), -((cameraX/centerXs[largeAreaIndex])));
+    		}
+    	}
+    	}
     	Teleop.teleopPeriodic();
     }   
     
@@ -170,9 +181,35 @@ public class Robot extends IterativeRobot {
     	compressor.stop();
         Disabled.onDisabledInit();
     }
+    private final NetworkTable grip = NetworkTable.getTable("GRIP");
     
     public void disabledPeriodic(){
+    	centerXs = grip.getNumberArray("targeting/centerX", new double[0]);
+    	areas = grip.getNumberArray("targeting/area", new double[0]);
+    	
+    	if (areas.length > 0){
+    		for (int i = 0; i < areas.length; i++){
+    			if (areas[i] > largestArea){
+    				largestArea = areas[i];
+    				largeAreaIndex = i;
+    			}
+    		}
+    	}
+    	if (centerXs.length > 0){
+    	System.out.println("Center X: " + centerXs[largeAreaIndex]);
+    	System.out.println("Percentage Off: " + (centerXs[largeAreaIndex] - cameraX)/400);
+    	}
+    	if (centerXs.length > 0){
+    		if (centerXs[largeAreaIndex] > cameraX + (cameraX * 0.01 * camErrorPercent)){
+    			driveBase.tankDrive((1-(cameraX/centerXs[largeAreaIndex])), -(1-(cameraX/centerXs[largeAreaIndex])));
+    			System.out.println("Turning Left");
+    		}else if (centerXs[largeAreaIndex] < cameraX - (cameraX * 0.01 * camErrorPercent)){
+    			driveBase.tankDrive(((cameraX/centerXs[largeAreaIndex])), -((cameraX/centerXs[largeAreaIndex])));
+    			System.out.println("Turning Right");
+    		}
+    	}
         Disabled.onDisabledPeriodic();
+
     }
 
     /**
@@ -184,4 +221,12 @@ public class Robot extends IterativeRobot {
         // normalize angle to [-π, π]
         return MathUtils.normalizeAngle(angle, 0.0);
     }
+   
+   public static void waitVision(){
+	  try {
+		visionThread.wait();
+	} catch (InterruptedException e) {
+		
+	}
+   }
 }

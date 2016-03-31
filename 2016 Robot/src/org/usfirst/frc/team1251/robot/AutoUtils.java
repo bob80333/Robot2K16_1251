@@ -1,7 +1,5 @@
 package org.usfirst.frc.team1251.robot;
 
-import org.usfirst.frc.team1251.robot.vision.Contour;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 /**
@@ -57,54 +55,6 @@ public class AutoUtils {
 
 
         }
-    }
-
-    public static void approachTarget(int location) {
-
-        switch (location)
-
-        {
-            case -1:
-                // no location given, try to find the target
-                double lowestAngleTarget = Robot.PI + 1; //init with impossible number
-                double secondLowestAngleTarget = Robot.PI + 1; //init with impossible number
-                // find lowest angle difference target
-                for (Contour contour : Robot.contours) {
-                    if (Math.abs(Robot.normalizeAngle(contour.getAngle())) < Math.abs(contour.getAngle())) {
-                        secondLowestAngleTarget = lowestAngleTarget;
-                        lowestAngleTarget = contour.getAngle();
-                    }
-                }
-
-
-                // do targeting stuff here
-            case 0:
-                // we are the spybot
-
-
-            case 1:
-                // we are in position 2
-
-
-            case 2:
-                // we are in position 3
-
-
-            case 3:
-                // we are in position 4
-
-
-            case 4:
-                // we are in position 5
-
-
-        }
-
-    }
-
-
-    public static void adjustRobotAngle(Contour target){
-        adjuster.changeDrivetrainAngle(target.getAngle(), 70);
     }
 
     public static void changeDrivetrainAbsoluteAngle(double degrees, int loopsToTake){
