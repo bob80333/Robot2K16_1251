@@ -96,6 +96,8 @@ public class Robot extends IterativeRobot {
     	
     	//Potentiometer using analog 3
     	Pot = new AnalogPotentiometer(3, 360, 0);
+
+        AutoUtils.adjuster = new RobotRotator();
     	
     	//PID decelerations
     	shooterSpeed.setDistancePerPulse(1.5);

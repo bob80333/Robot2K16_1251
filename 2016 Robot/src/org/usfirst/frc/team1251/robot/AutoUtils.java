@@ -10,139 +10,103 @@ public class AutoUtils {
     /**
      * Created by Eric on 3/5/2016.
      **/
+    static RobotRotator adjuster;
+    public static boolean goneUpDefense = false;
+    public static boolean goingUpDefense = false;
+    public static boolean goneDownDefense = false;
+    public static boolean goingDownDefense = false;
+    public static int loopsSinceCrossed = 0;
+    public static final double crossingAngle = 10.0;
+    public static boolean crossed = false;
+    public static final double angleMargin = 0.5;
 
-        public static boolean goneUpDefense = false;
-        public static boolean goingUpDefense = false;
-        public static boolean goneDownDefense = false;
-        public static boolean goingDownDefense = false;
-        public static int loopsSinceCrossed = 0;
-        public static final double crossingAngle = 10.0;
-        public static boolean crossed = false;
-        public static boolean targetLockedSuccessfully = false;
-        public static final double angleMargin = 0.5;
-        public static final double k_turnPercentage = 0.002;
-        public static double startingAngle = 0;
-        public static int startingLoop = 0;
-        public static int currentLoop = 0;
-        public static boolean turningCompleted = false;
-        public static boolean turningFirstLoop = true;
+    public static void crossDefenses(int defense) {
+        switch (defense) {
+            case -1:
+                // it couldn't find the defense we are crossing
+                // just sit there stupidly
+            case 0:
+                // this is the default, just crosses the defense
+                if (!goneDownDefense && !(loopsSinceCrossed > 10)) {
+                    Robot.driveBase.tankDrive(0.8, 0.8);
+                } else {
+                    crossed = true;
 
-        public static void crossDefenses(int defense) {
-            switch (defense) {
-                case -1:
-                    // it couldn't find the defense we are crossing
-                    // just sit there stupidly
-                case 0:
-                    // this is the default, just crosses the defense
-                    if (!goneDownDefense && !(loopsSinceCrossed > 10)) {
-                        Robot.driveBase.tankDrive(0.8, 0.8);
-                    } else {
-                        crossed = true;
-
-                    }
-                    if (Robot.vGyro.getAngle() > crossingAngle) {
-                        goingUpDefense = true;
-                    } else if (Robot.vGyro.getAngle() < crossingAngle) {
-                        goingDownDefense = true;
-                    } else if (Robot.vGyro.getAngle() > -1 && Robot.vGyro.getAngle() < 1) {
-                        if (goingUpDefense) {
-                            goneUpDefense = true;
-                        } else if (goingDownDefense) {
-                            goneDownDefense = true;
-                        }
-                    }
-
-
-                case 1:
-                    // cross the teeter-totters
-
-
-                case 2:
-                    // open the gateway
-
-
-            }
-
-        }
-
-        public static void approachTarget(int location) {
-            switch (location) {
-                case -1:
-                    // no location given, try to find the target
-                    double lowestAngleTarget = Robot.PI + 1; //init with impossible number
-                    double secondLowestAngleTarget = Robot.PI + 1; //init with impossible number
-                    // find lowest angle difference target
-                    for (Contour contour : Robot.contours) {
-                        if (Math.abs(Robot.normalizeAngle(contour.getAngle())) < Math.abs(contour.getAngle())) {
-                            secondLowestAngleTarget = lowestAngleTarget;
-                            lowestAngleTarget = contour.getAngle();
-                        }
-                    }
-
-
-                    // do targeting stuff here
-                case 0:
-                    // we are the spybot
-
-
-                case 1:
-                    // we are in position 2
-
-
-                case 2:
-                    // we are in position 3
-
-
-                case 3:
-                    // we are in position 4
-
-
-                case 4:
-                    // we are in position 5
-
-
-            }
-        }
-
-
-        public static void adjustRobotAngle(Contour target){
-            if (!targetLockedSuccessfully){
-                if ((Robot.hGyro.getAngle() > Robot.hGyro.getAngle() + target.getAngle() + angleMargin)
-                        || (Robot.hGyro.getAngle() < Robot.hGyro.getAngle() + target.getAngle() - angleMargin)){
-                    Robot.driveBase.tankDrive((-Robot.hGyro.getAngle() + target.getAngle()) * k_turnPercentage,
-                            (Robot.hGyro.getAngle() + target.getAngle()) * k_turnPercentage);
-                }else{
-                    targetLockedSuccessfully = true;
                 }
-            }
-        }
-    public static void changeDrivetrainAngle(double changeInDegrees, int loopsToTake){ //true auto, false teleop
-            if (turningFirstLoop) {
-                currentLoop = 1;
-                turningFirstLoop = false;
-                turningCompleted = false;
-                startingAngle = Robot.hGyro.getAngle();
-            }
+                if (Robot.vGyro.getAngle() > crossingAngle) {
+                    goingUpDefense = true;
+                } else if (Robot.vGyro.getAngle() < crossingAngle) {
+                    goingDownDefense = true;
+                } else if (Robot.vGyro.getAngle() > -1 && Robot.vGyro.getAngle() < 1) {
+                    if (goingUpDefense) {
+                        goneUpDefense = true;
+                    } else if (goingDownDefense) {
+                        goneDownDefense = true;
+                    }
+                }
 
-        if (!turningCompleted) {
-            if (changeInDegrees < 0) {
-                Robot.driveBase.tankDrive(((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage), -((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage));
-            } else if (changeInDegrees > 0) {
-                Robot.driveBase.tankDrive(((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage), -((loopsToTake / currentLoop) * (changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) * k_turnPercentage));
-            } else {
-                // uhhh
-                // done, right?
-                turningCompleted = true;
-                turningFirstLoop = true;
-            }
-                if ((changeInDegrees - (startingAngle - Robot.hGyro.getAngle())) < angleMargin){
-                    turningCompleted = true;
-            }
+
+            case 1:
+                // cross the teeter-totters
+
+
+            case 2:
+                // open the gateway
+
+
         }
-        if (currentLoop == loopsToTake){
-            turningCompleted = true;
-            turningFirstLoop = true;
+    }
+
+    public static void approachTarget(int location) {
+
+        switch (location)
+
+        {
+            case -1:
+                // no location given, try to find the target
+                double lowestAngleTarget = Robot.PI + 1; //init with impossible number
+                double secondLowestAngleTarget = Robot.PI + 1; //init with impossible number
+                // find lowest angle difference target
+                for (Contour contour : Robot.contours) {
+                    if (Math.abs(Robot.normalizeAngle(contour.getAngle())) < Math.abs(contour.getAngle())) {
+                        secondLowestAngleTarget = lowestAngleTarget;
+                        lowestAngleTarget = contour.getAngle();
+                    }
+                }
+
+
+                // do targeting stuff here
+            case 0:
+                // we are the spybot
+
+
+            case 1:
+                // we are in position 2
+
+
+            case 2:
+                // we are in position 3
+
+
+            case 3:
+                // we are in position 4
+
+
+            case 4:
+                // we are in position 5
+
+
         }
+
+    }
+
+
+    public static void adjustRobotAngle(Contour target){
+        adjuster.changeDrivetrainAngle(target.getAngle(), 70);
+    }
+
+    public static void changeDrivetrainAbsoluteAngle(double degrees, int loopsToTake){
+
     }
 
     public static void crossPort(){
