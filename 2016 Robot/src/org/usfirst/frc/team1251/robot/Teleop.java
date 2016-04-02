@@ -74,8 +74,9 @@ public class Teleop {
 
         averageJoystickLeft /= Robot.k_valuesToAverage;
         averageJoystickRight /= Robot.k_valuesToAverage;
-
+        if (!Robot.isTracking){
         Robot.driveBase.tankDrive(averageJoystickLeft, averageJoystickRight);
+        }
         //Collector arm up and down
         if (Robot.driveController.getRawButton(4)) { //up
             Robot.collectorArm.set(Value.kForward );
@@ -86,15 +87,6 @@ public class Teleop {
             Robot.armPosition = "Down";
         }
 
-        //Hood up and down
-        if (Robot.operatorController.getPOV() == 0) {
-            Robot.shooterHood.set(true);
-            Robot.hoodPosition = "Up";
-        }
-        else if (Robot.operatorController.getPOV() == 180) {
-            Robot.shooterHood.set(false);
-            Robot.hoodPosition = "Down";
-        }
 
         //Shooter method
 

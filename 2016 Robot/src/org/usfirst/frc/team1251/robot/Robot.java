@@ -9,6 +9,7 @@ import java.util.Scanner;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.apache.commons.math3.util.MathUtils;
 
@@ -43,17 +44,19 @@ public class Robot extends IterativeRobot {
     public static ADXRS450_Gyro hGyro;
     public static boolean isVisionTargeting = false;
     public static boolean isCameraStarted = false;
-    public static final int cameraX = 320;
+    public static int lastTracked = 150;
+    public static final int cameraX = 350;
+    public static boolean isTracking = false;
 	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
-			k_RPM1 = 16350, 	//Low RPM speed
-			k_RPM2 = 17125,	//Mid 1 RPM speed
+			k_RPM1 = 16100, 	//Low RPM speed
+			k_RPM2 = 16750,	//Mid 1 RPM speed
 			k_RPM3 = 18250, 	//Mid 2 RPM speed
 			k_RPM4 = 25000,	//High RPM speed
 
             k_TOLERANCE = 0.05;
     public static final int k_valuesToAverage = 5;// number of values to average from the driver input
-    public static final int camErrorPercent = 10;
+    public static final int camErrorPercent = 4;
     public static int location = -1;
     public static int defense = -1;
     public static boolean lockTargets = true;
@@ -96,7 +99,7 @@ public class Robot extends IterativeRobot {
     	shooterSpeed.setDistancePerPulse(1.5);
 		shooterSpeed.setPIDSourceType(PIDSourceType.kRate);
 		Pot.setPIDSourceType(PIDSourceType.kDisplacement);
-		Pid = new PIDController(0.0002, 0.08, 0.0001, shooterSpeed, mShooter, 0.001);
+		Pid = new PIDController(0.0000001, 0.0000000009, 0.0001, shooterSpeed, mShooter, 0.001);
 	
         Scanner scan = null;
         try {
@@ -152,29 +155,56 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-    	lockTargets = operatorController.getPOV() == 0.0;
-    	if (lockTargets){
-    	centerXs = grip.getNumberArray("targeting/centerX", new double[0]);
-    	areas = grip.getNumberArray("targeting/area", new double[0]);
     	
-    	if (areas.length != 0){
-    		for (int i = 0; i < areas.length; i++){
-    			if (areas[i] > largestArea){
-    				largestArea = areas[i];
-    				largeAreaIndex = i;
-    			}
-    		}
-    	}
+		if (operatorController.getRawButton(2)) {
+			centerXs = grip.getNumberArray("targeting/centerX", new double[0]);
+			areas = grip.getNumberArray("targeting/area", new double[0]);
+
+			if (areas.length != 0) {
+				for (int i = 0; i < areas.length; i++) {
+					if (areas[i] > largestArea) {
+						largestArea = areas[i];
+						largeAreaIndex = i;
+					}
+				}
+			}
+			if (centerXs.length > 0) {
+				System.out.println("Center X: " + centerXs[largeAreaIndex]);
+				System.out.println("Percentage Off: "
+						+ (centerXs[largeAreaIndex] - cameraX) / 400);
+			}
+			if (centerXs.length != 0) {
+				if (centerXs[largeAreaIndex] > cameraX
+						+ (cameraX * 0.01 * camErrorPercent)) {
+					isTracking = true;
+					driveBase.tankDrive(-0.53, 0.53);
+					System.out.println("Turning Left");
+					SmartDashboard.putBoolean("Vision: ", false);
+				} else if (centerXs[largeAreaIndex] < cameraX
+						- (cameraX * 0.01 * camErrorPercent)) {
+					isTracking = true;
+					driveBase.tankDrive(0.47, -0.47);
+					System.out.println("Turning Right");
+					SmartDashboard.putBoolean("Vision: ", false);
+				} else {
+					isTracking = false;
+					SmartDashboard.putBoolean("Vision: ", true);
+				}
+				lastTracked  = 0;
+			}else{
+				isTracking = false;
+			}
+			lastTracked  = 0;
+		}else
+		{
+			isTracking = false;
+			if (lastTracked > 150){
+			SmartDashboard.putBoolean("Vision: ", false);
+			}
+		}
     	
-    	if (centerXs.length != 0){
-    		if (centerXs[largeAreaIndex] > cameraX + (cameraX * 0.01 * camErrorPercent)){
-    			driveBase.tankDrive((1-(cameraX/centerXs[largeAreaIndex])), -(1-(cameraX/centerXs[largeAreaIndex])));
-    		}else if (centerXs[largeAreaIndex] < cameraX - (cameraX * 0.01 * camErrorPercent)){
-    			driveBase.tankDrive(((cameraX/centerXs[largeAreaIndex])), -((cameraX/centerXs[largeAreaIndex])));
-    		}
-    	}
-    	}
     	Teleop.teleopPeriodic();
+    	lastTracked++;
     }   
     
     public void disabledInit() {
@@ -184,30 +214,7 @@ public class Robot extends IterativeRobot {
     private final NetworkTable grip = NetworkTable.getTable("GRIP");
     
     public void disabledPeriodic(){
-    	centerXs = grip.getNumberArray("targeting/centerX", new double[0]);
-    	areas = grip.getNumberArray("targeting/area", new double[0]);
     	
-    	if (areas.length > 0){
-    		for (int i = 0; i < areas.length; i++){
-    			if (areas[i] > largestArea){
-    				largestArea = areas[i];
-    				largeAreaIndex = i;
-    			}
-    		}
-    	}
-    	if (centerXs.length > 0){
-    	System.out.println("Center X: " + centerXs[largeAreaIndex]);
-    	System.out.println("Percentage Off: " + (centerXs[largeAreaIndex] - cameraX)/400);
-    	}
-    	if (centerXs.length > 0){
-    		if (centerXs[largeAreaIndex] > cameraX + (cameraX * 0.01 * camErrorPercent)){
-    			driveBase.tankDrive((1-(cameraX/centerXs[largeAreaIndex])), -(1-(cameraX/centerXs[largeAreaIndex])));
-    			System.out.println("Turning Left");
-    		}else if (centerXs[largeAreaIndex] < cameraX - (cameraX * 0.01 * camErrorPercent)){
-    			driveBase.tankDrive(((cameraX/centerXs[largeAreaIndex])), -((cameraX/centerXs[largeAreaIndex])));
-    			System.out.println("Turning Right");
-    		}
-    	}
         Disabled.onDisabledPeriodic();
 
     }
