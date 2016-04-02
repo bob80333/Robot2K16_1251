@@ -179,13 +179,13 @@ public class Robot extends IterativeRobot {
 				if (centerXs[largeAreaIndex] > cameraX
 						+ (cameraX * 0.01 * camErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(-0.533, 0.533);
+					driveBase.tankDrive(-0.56, 0.56);
 					System.out.println("Turning Left");
 					SmartDashboard.putBoolean("Vision: ", false);
 				} else if (centerXs[largeAreaIndex] < cameraX
 						- (cameraX * 0.01 * camErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(0.48, -0.48);
+					driveBase.tankDrive(0.49, -0.49);
 					System.out.println("Turning Right");
 					SmartDashboard.putBoolean("Vision: ", false);
 					isTracking = false;
