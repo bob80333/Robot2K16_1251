@@ -49,14 +49,15 @@ public class Robot extends IterativeRobot {
     public static boolean isTracking = false;
 	public static final double /** Changeable constant values */
 			revSpeed = 0.5,	//Drive rev speed
-			k_RPM1 = 16100, 	//Low RPM speed
+			k_RPM1 = 15950, 	//Low RPM speed
 			k_RPM2 = 16750,	//Mid 1 RPM speed
 			k_RPM3 = 18250, 	//Mid 2 RPM speed
 			k_RPM4 = 25000,	//High RPM speed
 
             k_TOLERANCE = 0.05;
     public static final int k_valuesToAverage = 5;// number of values to average from the driver input
-    public static final int camErrorPercent = 4;
+    public static final int camErrorPercent = 9;
+    public static final int stageTwoErrorPercent = 10;
     public static int location = -1;
     public static int defense = -1;
     public static boolean lockTargets = true;
@@ -177,13 +178,13 @@ public class Robot extends IterativeRobot {
 				if (centerXs[largeAreaIndex] > cameraX
 						+ (cameraX * 0.01 * camErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(-0.53, 0.53);
+					driveBase.tankDrive(-0.56, 0.56);
 					System.out.println("Turning Left");
 					SmartDashboard.putBoolean("Vision: ", false);
 				} else if (centerXs[largeAreaIndex] < cameraX
 						- (cameraX * 0.01 * camErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(0.47, -0.47);
+					driveBase.tankDrive(0.49, -0.49);
 					System.out.println("Turning Right");
 					SmartDashboard.putBoolean("Vision: ", false);
 				} else {
