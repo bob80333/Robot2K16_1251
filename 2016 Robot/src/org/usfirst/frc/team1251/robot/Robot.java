@@ -56,8 +56,8 @@ public class Robot extends IterativeRobot {
 
             k_TOLERANCE = 0.05;
     public static final int k_valuesToAverage = 5;// number of values to average from the driver input
-    public static final int camErrorPercent = 6;
-    public static final int stageTwoErrorPercent = 10;
+    public static final int camErrorPercent = 7;
+    public static final int stageTwoErrorPercent = 15;
     public static int location = -1;
     public static int defense = -1;
     public static boolean lockTargets = true;
@@ -178,25 +178,25 @@ public class Robot extends IterativeRobot {
 				if (centerXs[largeAreaIndex] > cameraX
 						+ (cameraX * 0.01 * stageTwoErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(-0.56, 0.56);
+					driveBase.tankDrive(-0.533, 0.533);
 					System.out.println("Turning Left");
 					SmartDashboard.putBoolean("Vision: ", false);
 				} else if (centerXs[largeAreaIndex] < cameraX
 						- (cameraX * 0.01 * stageTwoErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(0.49, -0.49);
+					driveBase.tankDrive(0.48, -0.48);
 					System.out.println("Turning Right");
 					SmartDashboard.putBoolean("Vision: ", false);
 				}else if (centerXs[largeAreaIndex] > cameraX
 						+ (cameraX * 0.01 * camErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(-0.54, 0.54);
+					driveBase.tankDrive(-0.473, 0.473);
 					System.out.println("Turning Left");
 					SmartDashboard.putBoolean("Vision: ", false);
 				} else if (centerXs[largeAreaIndex] < cameraX
 						- (cameraX * 0.01 * camErrorPercent)) {
 					isTracking = true;
-					driveBase.tankDrive(0.475, -0.475);
+					driveBase.tankDrive(0.42, -0.42);
 					System.out.println("Turning Right");
 					SmartDashboard.putBoolean("Vision: ", false); 
 					}else {
