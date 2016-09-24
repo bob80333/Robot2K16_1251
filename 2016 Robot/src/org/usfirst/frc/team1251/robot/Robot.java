@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {
 	public static Joystick driveController, operatorController;
 	public static Victor mCollector, mShooter;
 	public static Compressor compressor;
-	public static DoubleSolenoid collectorArm;
+	public static DoubleSolenoid collectorArm, stabilizer;
 	public static Solenoid shooterHood;
 	public static DigitalInput ballDetect;
 	public static CameraServer tempCam;
@@ -78,6 +78,7 @@ public class Robot extends IterativeRobot {
     	
     	//Solenoids using pneumatics slot 0, 1, 2, 3
     	collectorArm = new DoubleSolenoid(0, 1);
+    	stabilizer = new DoubleSolenoid(2, 3);
     	shooterHood = new Solenoid(2, 3);
     	
     	//Button detector using DIO 0
@@ -158,7 +159,7 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
     	
-		if (operatorController.getRawButton(2)) {
+		if (true) {
 			centerXs = grip.getNumberArray("targeting/centerX", new double[0]);
 			areas = grip.getNumberArray("targeting/area", new double[0]);
 
@@ -188,6 +189,7 @@ public class Robot extends IterativeRobot {
 					driveBase.tankDrive(0.49, -0.49);
 					System.out.println("Turning Right");
 					SmartDashboard.putBoolean("Vision: ", false);
+				}else{
 					isTracking = false;
 					SmartDashboard.putBoolean("Vision: ", true);
 				}

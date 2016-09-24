@@ -88,6 +88,14 @@ public class Teleop {
             Robot.collectorArm.set(Value.kReverse);
             Robot.armPosition = "Down";
         }
+        //Stabilizer
+        
+        if (Robot.driveController.getRawButton(1)) {
+        	Robot.stabilizer.set(Value.kForward);
+        }
+        else if (Robot.driveController.getRawButton(2)) {
+        	Robot.stabilizer.set(Value.kReverse);
+        }
 
 
         //Shooter method
